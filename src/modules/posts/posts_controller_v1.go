@@ -1,6 +1,7 @@
 package posts
 
 import (
+	"fmt"
 	"go-photopost/src/entities"
 	"go-photopost/src/middlewares"
 	"log"
@@ -11,6 +12,7 @@ import (
 
 type PostsControllerV1Interface interface {
 	Run(router *gin.RouterGroup)
+	UploadPhoto(c *gin.Context)
 	CreatePost(c *gin.Context)
 	GetPostList(c *gin.Context)
 	GetPost(c *gin.Context)
@@ -36,8 +38,31 @@ func NewPostsControllerV1(
 
 func (pc PostsControllerV1) Run(router *gin.RouterGroup) {
 	router.POST("/", pc.JWTAuthMiddleware.Handler(), pc.CreatePost)
+	router.POST("/upload", pc.JWTAuthMiddleware.Handler(), pc.UploadPhoto)
 	router.GET("/", pc.GetPostList)
 	router.GET("/p/:id", pc.GetPost)
+}
+
+func (pc PostsControllerV1) UploadPhoto(c *gin.Context) {
+	var body UploadPhotoDto
+	c.Bind(&body)
+
+	file, err := body.Image.Open()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	defer file.Close()
+	fileBuffer := make([]byte, body.Image.Size)
+	file.Read(fileBuffer)
+
+	// c.String(http.StatusOK, "", body.Image)
+	c.Writer.WriteHeader(http.StatusOK)
+	c.Header("Content-Type", body.Image.Header.Get("Content-Type"))
+	c.Header("Content-Length", fmt.Sprintf("%d", body.Image.Size))
+	c.Writer.Write(fileBuffer) //the memory take up 1.2~1.7G
 }
 
 func (pc PostsControllerV1) CreatePost(c *gin.Context) {

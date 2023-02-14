@@ -8,14 +8,17 @@ import (
 
 // Env has environment stored
 type Env struct {
-	ServerPort  string `mapstructure:"PORT"`
-	Environment string `mapstructure:"ENV"`
-	DBUsername  string `mapstructure:"DB_USER"`
-	DBPassword  string `mapstructure:"DB_PASS"`
-	DBHost      string `mapstructure:"DB_HOST"`
-	DBPort      string `mapstructure:"DB_PORT"`
-	DBName      string `mapstructure:"DB_NAME"`
-	JWTSecret   string `mapstructure:"JWT_SECRET"`
+	ServerPort         string `mapstructure:"PORT"`
+	Environment        string `mapstructure:"ENV"`
+	DBUsername         string `mapstructure:"DB_USER"`
+	DBPassword         string `mapstructure:"DB_PASS"`
+	DBHost             string `mapstructure:"DB_HOST"`
+	DBPort             string `mapstructure:"DB_PORT"`
+	DBName             string `mapstructure:"DB_NAME"`
+	JWTSecret          string `mapstructure:"JWT_SECRET"`
+	AWSAccessKeyId     string `mapstructure:"AWS_ACCESS_KEY_ID"`
+	AWSSecretAccessKey string `mapstructure:"AWS_SECRET_ACCESS_KEY"`
+	AWSS3Bucket        string `mapstructure:"AWS_S3_BUCKET"`
 }
 
 // NewEnv creates a new environment

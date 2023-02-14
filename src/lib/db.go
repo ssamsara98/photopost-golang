@@ -26,7 +26,11 @@ func NewDatabase(logger *log.Logger, env *Env) *gorm.DB {
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&entities.User{}, &entities.Post{})
+	db.AutoMigrate(
+		&entities.User{},
+		&entities.Post{},
+		&entities.PostPhoto{},
+	)
 
 	return db
 }
