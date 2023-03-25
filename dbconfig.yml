@@ -1,5 +1,5 @@
 development:
   dialect: postgres
-  datasource: host=prodhost dbname=proddb user=${DB_USER} password=${DB_PASSWORD} sslmode=required
+  datasource: ${DB_USER}:${DB_PASS}@tcp(${DB_HOST}:${DB_PORT})/${DB_NAME}?parseTime=true
   dir: migrations
   table: migrations

@@ -13,7 +13,7 @@ func main() {
 
 	err := godotenv.Load()
 	if err != nil {
-		logger.Println(err.Error())
+		logger.Panicln(err.Error())
 	}
 
 	server := InitServer()

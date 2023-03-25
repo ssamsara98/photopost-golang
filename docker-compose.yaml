@@ -1,0 +1,45 @@
+version: '3.4'
+
+services:
+  postgres:
+    image: postgres:12-alpine
+    restart: always
+    volumes:
+      - data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: go_photopost
+    networks:
+      - net
+
+  adminer:
+    image: adminer:4.8.1
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+    networks:
+      - net
+
+  photopost:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - ${DEBUG_PORT}:2345
+    volumes:
+      - .:/clean_web
+    env_file: .env
+    security_opt:
+      - seccomp:unconfined
+    depends_on:
+      - postgres
+
+volumes:
+  data:
+
+
+networks:
+  net:
