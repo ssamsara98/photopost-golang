@@ -117,8 +117,7 @@ func (pc PostsControllerV1) CreatePost(c *gin.Context) {
 	var body CreatePostReqDto
 	c.Bind(&body)
 
-	userAny, _ := c.Get("user")
-	user := userAny.(*entities.User)
+	user := c.MustGet("user").(*entities.User)
 
 	result := pc.PostsServiceV1.CreatePost(user, &body)
 	c.JSON(http.StatusOK, result)

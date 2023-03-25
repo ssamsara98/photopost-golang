@@ -30,6 +30,7 @@ func NewDatabase(logger *log.Logger, env *Env) *gorm.DB {
 		&entities.User{},
 		&entities.Post{},
 		&entities.PostPhoto{},
+		&entities.PostToPhoto{},
 	)
 
 	return db

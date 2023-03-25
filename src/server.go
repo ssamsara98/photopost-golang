@@ -55,6 +55,8 @@ func NewServer(
 func (server Server) Start() {
 	r := gin.Default()
 	r.Use(favicon.New("./favicon.ico"))
+	r.Use(gin.Recovery())
+	r.Use(gin.Logger())
 
 	// version 1
 	apiV1 := r.Group("v1")

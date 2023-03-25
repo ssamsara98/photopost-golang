@@ -7,7 +7,8 @@ type GetPostByIdParams struct {
 }
 
 type CreatePostReqDto struct {
-	Caption string `form:"caption"`
+	Caption  string   `form:"caption"`
+	PhotoIds []string `form:"photoIds"`
 }
 
 type UploadPhotoReqDto struct {
