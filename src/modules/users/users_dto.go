@@ -1,10 +1,10 @@
 package users
 
-type GetUserByIdUri struct {
+type GetUserByIdParams struct {
 	ID string `uri:"userId" binding:"required"`
 }
 
-type CreateUserDto struct {
+type CreateUserReqDto struct {
 	Email    string `form:"name"`
 	Username string `form:"username"`
 	Password string `form:"password"`

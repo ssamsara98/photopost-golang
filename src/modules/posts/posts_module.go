@@ -2,12 +2,12 @@ package posts
 
 import "github.com/gin-gonic/gin"
 
-type PostsModuleInterface interface {
+type PostsModuleInf interface {
 	Router(rg *gin.RouterGroup)
 }
 
 type PostsModule struct {
-	PostsControllerV1 PostsControllerV1Interface
+	PostsControllerV1 PostsControllerV1Inf
 }
 
 func NewPostsModule(

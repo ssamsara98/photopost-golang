@@ -2,14 +2,14 @@ package posts
 
 import "mime/multipart"
 
-type GetPostByIdUri struct {
+type GetPostByIdParams struct {
 	ID string `uri:"id" binding:"required"`
 }
 
-type CreatePostDto struct {
+type CreatePostReqDto struct {
 	Caption string `form:"caption"`
 }
 
-type UploadPhotoDto struct {
-	Image multipart.FileHeader `form:"image"`
+type UploadPhotoReqDto struct {
+	Image multipart.FileHeader `form:"image" binding:"required"`
 }

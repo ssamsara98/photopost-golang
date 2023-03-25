@@ -8,10 +8,10 @@ import (
 	"gorm.io/gorm"
 )
 
-type UsersServiceV1Interface interface {
-	CreateUser(body CreateUserDto) *entities.User
+type UsersServiceV1Inf interface {
+	CreateUser(body CreateUserReqDto) *entities.User
 	GetUserList() []entities.User
-	GetUser(uri *GetUserByIdUri) *entities.User
+	GetUser(uri *GetUserByIdParams) *entities.User
 }
 
 type UsersServiceV1 struct {
@@ -29,7 +29,7 @@ func NewUsersServiceV1(
 	}
 }
 
-func (us UsersServiceV1) CreateUser(body CreateUserDto) *entities.User {
+func (us UsersServiceV1) CreateUser(body CreateUserReqDto) *entities.User {
 	hashedPassword := helpers.HashPassword([]byte(body.Password))
 
 	user := entities.User{
@@ -51,7 +51,7 @@ func (us UsersServiceV1) GetUserList() []entities.User {
 	return users
 }
 
-func (us UsersServiceV1) GetUser(uri *GetUserByIdUri) *entities.User {
+func (us UsersServiceV1) GetUser(uri *GetUserByIdParams) *entities.User {
 	var user entities.User
 	us.DB.First(&user, uri.ID)
 

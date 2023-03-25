@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type AppModuleInterface interface {
+type AppModuleInf interface {
 	Router(r *gin.Engine)
 }
 

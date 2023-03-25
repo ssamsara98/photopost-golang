@@ -20,6 +20,7 @@ func InitServer() *src.Server {
 		lib.NewEnv,
 		lib.NewDatabase,
 		lib.NewJWTAuthHelper,
+		lib.NewS3Service,
 		middlewares.NewJWTAuthMiddleware,
 		usersSvcV1,
 		usersCtlV1,
@@ -36,7 +37,7 @@ func InitServer() *src.Server {
 var appModule = wire.NewSet(
 	src.NewAppModule,
 	wire.Bind(
-		new(src.AppModuleInterface),
+		new(src.AppModuleInf),
 		new(*src.AppModule),
 	),
 )
@@ -44,7 +45,7 @@ var appModule = wire.NewSet(
 var usersModule = wire.NewSet(
 	users.NewUsersModule,
 	wire.Bind(
-		new(users.UsersModuleInterface),
+		new(users.UsersModuleInf),
 		new(*users.UsersModule),
 	),
 )
@@ -52,7 +53,7 @@ var usersModule = wire.NewSet(
 var usersCtlV1 = wire.NewSet(
 	users.NewUsersControllerV1,
 	wire.Bind(
-		new(users.UsersControllerV1Interface),
+		new(users.UsersControllerV1Inf),
 		new(*users.UsersControllerV1),
 	),
 )
@@ -60,7 +61,7 @@ var usersCtlV1 = wire.NewSet(
 var usersSvcV1 = wire.NewSet(
 	users.NewUsersServiceV1,
 	wire.Bind(
-		new(users.UsersServiceV1Interface),
+		new(users.UsersServiceV1Inf),
 		new(*users.UsersServiceV1),
 	),
 )
@@ -68,7 +69,7 @@ var usersSvcV1 = wire.NewSet(
 var postsModule = wire.NewSet(
 	posts.NewPostsModule,
 	wire.Bind(
-		new(posts.PostsModuleInterface),
+		new(posts.PostsModuleInf),
 		new(*posts.PostsModule),
 	),
 )
@@ -76,7 +77,7 @@ var postsModule = wire.NewSet(
 var postsCtlV1 = wire.NewSet(
 	posts.NewPostsControllerV1,
 	wire.Bind(
-		new(posts.PostsControllerV1Interface),
+		new(posts.PostsControllerV1Inf),
 		new(*posts.PostsControllerV1),
 	),
 )
@@ -84,7 +85,7 @@ var postsCtlV1 = wire.NewSet(
 var postsSvcV1 = wire.NewSet(
 	posts.NewPostsServiceV1,
 	wire.Bind(
-		new(posts.PostsServiceV1Interface),
+		new(posts.PostsServiceV1Inf),
 		new(*posts.PostsServiceV1),
 	),
 )

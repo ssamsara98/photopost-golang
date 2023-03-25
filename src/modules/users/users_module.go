@@ -2,12 +2,12 @@ package users
 
 import "github.com/gin-gonic/gin"
 
-type UsersModuleInterface interface {
+type UsersModuleInf interface {
 	Router(rg *gin.RouterGroup)
 }
 
 type UsersModule struct {
-	UsersControllerV1 UsersControllerV1Interface
+	UsersControllerV1 UsersControllerV1Inf
 }
 
 func NewUsersModule(

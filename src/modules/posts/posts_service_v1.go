@@ -7,10 +7,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type PostsServiceV1Interface interface {
-	CreatePost(user *entities.User, createPostDto *CreatePostDto) *entities.Post
+type PostsServiceV1Inf interface {
+	UploadPhoto(keypath *string) *entities.PostPhoto
+	CreatePost(user *entities.User, createPostDto *CreatePostReqDto) *entities.Post
 	GetPostList() []entities.Post
-	GetPost(uri *GetPostByIdUri) *entities.Post
+	GetPost(uri *GetPostByIdParams) *entities.Post
 }
 
 type PostsServiceV1 struct {
@@ -28,7 +29,16 @@ func NewPostsServiceV1(
 	}
 }
 
-func (ps PostsServiceV1) CreatePost(user *entities.User, createPostDto *CreatePostDto) *entities.Post {
+func (ps PostsServiceV1) UploadPhoto(keypath *string) *entities.PostPhoto {
+	newPhoto := &entities.PostPhoto{
+		Keypath: *keypath,
+	}
+	ps.DB.Create(newPhoto)
+
+	return newPhoto
+}
+
+func (ps PostsServiceV1) CreatePost(user *entities.User, createPostDto *CreatePostReqDto) *entities.Post {
 	newPost := &entities.Post{
 		AuthorID: user.ID,
 		Caption:  createPostDto.Caption,
@@ -45,7 +55,7 @@ func (ps PostsServiceV1) GetPostList() []entities.Post {
 	return postList
 }
 
-func (ps PostsServiceV1) GetPost(uri *GetPostByIdUri) *entities.Post {
+func (ps PostsServiceV1) GetPost(uri *GetPostByIdParams) *entities.Post {
 	var post entities.Post
 	ps.DB.Find(&post, uri.ID).First(&post)
 

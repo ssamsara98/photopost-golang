@@ -18,6 +18,7 @@ type Env struct {
 	JWTSecret          string `mapstructure:"JWT_SECRET"`
 	AWSAccessKeyId     string `mapstructure:"AWS_ACCESS_KEY_ID"`
 	AWSSecretAccessKey string `mapstructure:"AWS_SECRET_ACCESS_KEY"`
+	AWSRegion          string `mapstructure:"AWS_REGION"`
 	AWSS3Bucket        string `mapstructure:"AWS_S3_BUCKET"`
 }
 

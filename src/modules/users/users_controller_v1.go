@@ -8,14 +8,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UsersControllerV1Interface interface {
+type UsersControllerV1Inf interface {
 	Run(router *gin.RouterGroup)
 }
 
 type UsersControllerV1 struct {
 	Log               *log.Logger
 	JWTAuthMiddleware *middlewares.JWTAuthMiddleware
-	UsersService      UsersServiceV1Interface
+	UsersService      UsersServiceV1Inf
 }
 
 func NewUsersControllerV1(
@@ -37,7 +37,7 @@ func (uc UsersControllerV1) Run(router *gin.RouterGroup) {
 }
 
 func (uc UsersControllerV1) CreateUser(c *gin.Context) {
-	var body CreateUserDto
+	var body CreateUserReqDto
 	c.Bind(&body)
 
 	result := uc.UsersService.CreateUser(body)
@@ -51,7 +51,7 @@ func (uc UsersControllerV1) GetUserList(c *gin.Context) {
 }
 
 func (uc UsersControllerV1) GetUser(c *gin.Context) {
-	var uri GetUserByIdUri
+	var uri GetUserByIdParams
 	err := c.ShouldBindUri(&uri)
 	if err != nil {
 		c.JSON(400, gin.H{"msg": err})

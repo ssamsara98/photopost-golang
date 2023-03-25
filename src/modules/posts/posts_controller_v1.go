@@ -1,8 +1,8 @@
 package posts
 
 import (
-	"fmt"
 	"go-photopost/src/entities"
+	"go-photopost/src/lib"
 	"go-photopost/src/middlewares"
 	"log"
 	"net/http"
@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type PostsControllerV1Interface interface {
+type PostsControllerV1Inf interface {
 	Run(router *gin.RouterGroup)
 	UploadPhoto(c *gin.Context)
 	CreatePost(c *gin.Context)
@@ -20,17 +20,20 @@ type PostsControllerV1Interface interface {
 
 type PostsControllerV1 struct {
 	Log               *log.Logger
+	S3Service         *lib.S3Service
 	JWTAuthMiddleware *middlewares.JWTAuthMiddleware
-	PostsServiceV1    PostsServiceV1Interface
+	PostsServiceV1    PostsServiceV1Inf
 }
 
 func NewPostsControllerV1(
 	log *log.Logger,
+	s3Service *lib.S3Service,
 	jwtAuthMiddleware *middlewares.JWTAuthMiddleware,
 	postsServiceV1 *PostsServiceV1,
 ) *PostsControllerV1 {
 	return &PostsControllerV1{
 		log,
+		s3Service,
 		jwtAuthMiddleware,
 		postsServiceV1,
 	}
@@ -44,29 +47,74 @@ func (pc PostsControllerV1) Run(router *gin.RouterGroup) {
 }
 
 func (pc PostsControllerV1) UploadPhoto(c *gin.Context) {
-	var body UploadPhotoDto
+	var body UploadPhotoReqDto
 	c.Bind(&body)
 
-	file, err := body.Image.Open()
+	// file, err := body.Image.Open()
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"error": err.Error(),
+	// 	})
+	// 	return
+	// }
+	// defer file.Close()
+	// fileBuffer := make([]byte, body.Image.Size)
+	// file.Read(fileBuffer)
+
+	// // c.String(http.StatusOK, "", body.Image)
+
+	// c.Writer.WriteHeader(http.StatusOK)
+	// c.Header("Content-Type", body.Image.Header.Get("Content-Type"))
+	// c.Header("Content-Length", fmt.Sprintf("%d", body.Image.Size))
+	// c.Writer.Write(fileBuffer) //the memory take up 1.2~1.7G
+
+	// creds := credentials.NewStaticCredentialsProvider(pc.S3Service.Env.AWSAccessKeyId, pc.S3Service.Env.AWSSecretAccessKey, "")
+	// cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithCredentialsProvider(creds), config.WithRegion(pc.S3Service.Env.AWSRegion))
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"error": err.Error(),
+	// 	})
+	// 	return
+	// }
+	// client := s3.NewFromConfig(cfg)
+	// uploader := manager.NewUploader(client)
+
+	// result, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
+	// 	Bucket:        aws.String(pc.S3Service.Env.AWSS3Bucket),
+	// 	Key:           aws.String(fmt.Sprintf("img/photopost/%s", body.Image.Filename)),
+	// 	Body:          file,
+	// 	ACL:           types.ObjectCannedACLPublicRead,
+	// 	ContentType:   aws.String(body.Image.Header.Get("Content-Type")),
+	// 	ContentLength: body.Image.Size,
+	// 	// ContentDisposition:   aws.String("attachment"),
+	// 	// ServerSideEncryption: types.ServerSideEncryptionAes256,
+	// })
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"error": err.Error(),
+	// 	})
+	// 	return
+	// }
+
+	s3, err := pc.S3Service.UploadPhoto(&body.Image)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	defer file.Close()
-	fileBuffer := make([]byte, body.Image.Size)
-	file.Read(fileBuffer)
 
-	// c.String(http.StatusOK, "", body.Image)
-	c.Writer.WriteHeader(http.StatusOK)
-	c.Header("Content-Type", body.Image.Header.Get("Content-Type"))
-	c.Header("Content-Length", fmt.Sprintf("%d", body.Image.Size))
-	c.Writer.Write(fileBuffer) //the memory take up 1.2~1.7G
+	keypath := (*s3.Key)[4:]
+	photo := pc.PostsServiceV1.UploadPhoto(&keypath)
+
+	c.JSON(http.StatusOK, gin.H{
+		"s3":    s3,
+		"photo": photo,
+	})
 }
 
 func (pc PostsControllerV1) CreatePost(c *gin.Context) {
-	var body CreatePostDto
+	var body CreatePostReqDto
 	c.Bind(&body)
 
 	userAny, _ := c.Get("user")
@@ -82,7 +130,7 @@ func (pc PostsControllerV1) GetPostList(c *gin.Context) {
 }
 
 func (pc PostsControllerV1) GetPost(c *gin.Context) {
-	var uri GetPostByIdUri
+	var uri GetPostByIdParams
 	err := c.ShouldBindUri(&uri)
 	if err != nil {
 		c.JSON(400, gin.H{"msg": err})

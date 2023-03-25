@@ -1,14 +1,20 @@
 package lib
 
 import (
-	"bytes"
+	"context"
+	"fmt"
 	"log"
-	"net/http"
-	"os"
+	"mime/multipart"
+	"path"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+	"github.com/google/uuid"
+	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
 type S3Service struct {
@@ -26,41 +32,50 @@ func NewS3Service(
 	}
 }
 
-func (s3Service S3Service) UploadPhoto() {
-	session, err := session.NewSession(&aws.Config{})
+func (s3Service S3Service) UploadPhoto(image *multipart.FileHeader) (*manager.UploadOutput, error) {
+	filepath, err := uuid.NewRandom()
 	if err != nil {
-		s3Service.Log.Fatal(err)
+		log.Printf("error: %v", err)
+		return nil, err
+	}
+	id, err := gonanoid.New(32)
+	if err != nil {
+		log.Printf("error: %v", err)
+		return nil, err
 	}
 
-	// Upload Files
-	err = s3Service.uploadFile(session, "test.png")
+	file, err := image.Open()
 	if err != nil {
-		s3Service.Log.Fatal(err)
+		log.Printf("error: %v", err)
+		return nil, err
 	}
-}
+	defer file.Close()
 
-func (s3Service S3Service) uploadFile(session *session.Session, uploadFileDir string) error {
-
-	upFile, err := os.Open(uploadFileDir)
+	creds := credentials.NewStaticCredentialsProvider(s3Service.Env.AWSAccessKeyId, s3Service.Env.AWSSecretAccessKey, "")
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithCredentialsProvider(creds), config.WithRegion(s3Service.Env.AWSRegion))
 	if err != nil {
-		return err
+		log.Printf("error: %v", err)
+		return nil, err
 	}
-	defer upFile.Close()
+	client := s3.NewFromConfig(cfg)
+	uploader := manager.NewUploader(client)
 
-	upFileInfo, _ := upFile.Stat()
-	var fileSize int64 = upFileInfo.Size()
-	fileBuffer := make([]byte, fileSize)
-	upFile.Read(fileBuffer)
-
-	_, err = s3.New(session).PutObject(&s3.PutObjectInput{
-		Bucket:               aws.String(s3Service.Env.AWSS3Bucket),
-		Key:                  aws.String(uploadFileDir),
-		ACL:                  aws.String("private"),
-		Body:                 bytes.NewReader(fileBuffer),
-		ContentLength:        aws.Int64(fileSize),
-		ContentType:          aws.String(http.DetectContentType(fileBuffer)),
-		ContentDisposition:   aws.String("attachment"),
-		ServerSideEncryption: aws.String("AES256"),
+	fileExt := path.Ext(image.Filename)
+	keypath := fmt.Sprintf("%s/%s%s", filepath.String(), id, fileExt)
+	result, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
+		Bucket:        aws.String(s3Service.Env.AWSS3Bucket),
+		Key:           aws.String(fmt.Sprintf("img/photopost/%s", keypath)),
+		Body:          file,
+		ACL:           types.ObjectCannedACLPublicRead,
+		ContentType:   aws.String(image.Header.Get("Content-Type")),
+		ContentLength: image.Size,
+		// ContentDisposition:   aws.String("attachment"),
+		// ServerSideEncryption: types.ServerSideEncryptionAes256,
 	})
-	return err
+	if err != nil {
+		log.Printf("error: %v", err)
+		return nil, err
+	}
+
+	return result, nil
 }
