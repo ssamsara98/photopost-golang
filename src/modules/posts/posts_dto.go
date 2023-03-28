@@ -6,6 +6,10 @@ type GetPostByIdParams struct {
 	ID string `uri:"id" binding:"required"`
 }
 
+type GetPostByUserIdParams struct {
+	ID string `uri:"id" binding:"required"`
+}
+
 type CreatePostReqDto struct {
 	Caption  string   `form:"caption"`
 	PhotoIds []string `form:"photoIds"`

@@ -38,14 +38,16 @@ func (m JWTAuthMiddleware) Handler() gin.HandlerFunc {
 				return
 			}
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": err.Error(),
+				"statusCode": http.StatusUnauthorized,
+				"message":    err.Error(),
 			})
 			m.Log.Println(err)
 			c.Abort()
 			return
 		}
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": "you are not authorized",
+			"statusCode": http.StatusUnauthorized,
+			"message":    "You are not authorized",
 		})
 		c.Abort()
 	}

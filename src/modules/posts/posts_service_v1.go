@@ -13,6 +13,8 @@ type PostsServiceV1Inf interface {
 	CreatePost(user *entities.User, createPostDto *CreatePostReqDto) *entities.Post
 	GetPostList() []entities.Post
 	GetPost(uri *GetPostByIdParams) *entities.Post
+	GetMyPostList(user *entities.User) []entities.Post
+	GetUserPostList(uri *GetPostByUserIdParams) []entities.Post
 }
 
 type PostsServiceV1 struct {
@@ -71,7 +73,7 @@ func (ps PostsServiceV1) CreatePost(user *entities.User, createPostDto *CreatePo
 
 func (ps PostsServiceV1) GetPostList() []entities.Post {
 	var postList []entities.Post
-	ps.DB.Preload("Photos", func(db *gorm.DB) *gorm.DB {
+	ps.DB.Preload("Author").Preload("Photos", func(db *gorm.DB) *gorm.DB {
 		return ps.DB.Order("post_to_photos.position ASC").Preload("Photo")
 	}).Order("created_at DESC").Find(&postList)
 
@@ -80,9 +82,27 @@ func (ps PostsServiceV1) GetPostList() []entities.Post {
 
 func (ps PostsServiceV1) GetPost(params *GetPostByIdParams) *entities.Post {
 	var post entities.Post
-	ps.DB.Preload("Photos", func(db *gorm.DB) *gorm.DB {
+	ps.DB.Preload("Author").Preload("Photos", func(db *gorm.DB) *gorm.DB {
 		return ps.DB.Order("post_to_photos.position ASC").Preload("Photo")
 	}).Order("created_at DESC").First(&post, params.ID)
 
 	return &post
+}
+
+func (ps PostsServiceV1) GetMyPostList(user *entities.User) []entities.Post {
+	var postList []entities.Post
+	ps.DB.Preload("Photos", func(db *gorm.DB) *gorm.DB {
+		return ps.DB.Order("post_to_photos.position ASC").Preload("Photo")
+	}).Order("created_at DESC").Where("author_id = ?", user.ID).Find(&postList)
+
+	return postList
+}
+
+func (ps PostsServiceV1) GetUserPostList(params *GetPostByUserIdParams) []entities.Post {
+	var postList []entities.Post
+	ps.DB.Preload("Photos", func(db *gorm.DB) *gorm.DB {
+		return ps.DB.Order("post_to_photos.position ASC").Preload("Photo")
+	}).Order("created_at DESC").Where("author_id = ?", params.ID).Where("is_published = ?", true).Find(&postList)
+
+	return postList
 }
