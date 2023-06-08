@@ -28,6 +28,8 @@ func InitServer() *src.Server {
 		postsSvcV1,
 		postsCtlV1,
 		postsModule,
+		appSvc,
+		appCtl,
 		appModule,
 		src.NewServer,
 	)
@@ -39,6 +41,22 @@ var appModule = wire.NewSet(
 	wire.Bind(
 		new(src.AppModuleInf),
 		new(*src.AppModule),
+	),
+)
+
+var appCtl = wire.NewSet(
+	src.NewAppController,
+	wire.Bind(
+		new(src.AppControllerInf),
+		new(*src.AppController),
+	),
+)
+
+var appSvc = wire.NewSet(
+	src.NewAppService,
+	wire.Bind(
+		new(src.AppServiceInf),
+		new(*src.AppService),
 	),
 )
 

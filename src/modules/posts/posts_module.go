@@ -11,7 +11,7 @@ type PostsModule struct {
 }
 
 func NewPostsModule(
-	postsControllerV1 *PostsControllerV1,
+	postsControllerV1 PostsControllerV1Inf,
 ) *PostsModule {
 	return &PostsModule{
 		postsControllerV1,

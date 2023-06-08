@@ -21,7 +21,7 @@ type UsersControllerV1 struct {
 func NewUsersControllerV1(
 	log *log.Logger,
 	jwtAuthMiddleware *middlewares.JWTAuthMiddleware,
-	usersService *UsersServiceV1,
+	usersService UsersServiceV1Inf,
 ) *UsersControllerV1 {
 	return &UsersControllerV1{
 		log,

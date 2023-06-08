@@ -29,7 +29,7 @@ func NewPostsControllerV1(
 	log *log.Logger,
 	s3Service *lib.S3Service,
 	jwtAuthMiddleware *middlewares.JWTAuthMiddleware,
-	postsServiceV1 *PostsServiceV1,
+	postsServiceV1 PostsServiceV1Inf,
 ) *PostsControllerV1 {
 	return &PostsControllerV1{
 		log,

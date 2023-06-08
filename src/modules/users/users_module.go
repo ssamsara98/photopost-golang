@@ -11,7 +11,7 @@ type UsersModule struct {
 }
 
 func NewUsersModule(
-	usersControllerV1 *UsersControllerV1,
+	usersControllerV1 UsersControllerV1Inf,
 ) *UsersModule {
 	return &UsersModule{
 		usersControllerV1,
