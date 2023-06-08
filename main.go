@@ -1,12 +1,19 @@
 package main
 
 import (
+	"go-photopost/src"
+	"go-photopost/src/lib"
+	"go-photopost/src/middlewares"
+	"go-photopost/src/modules/posts"
+	"go-photopost/src/modules/users"
 	"log"
+	"net/http"
 
 	"github.com/joho/godotenv"
+	"go.uber.org/fx"
 )
 
-//go:generate go run github.com/google/wire/cmd/wire
+// //go:generate go run github.com/google/wire/cmd/wire
 
 func main() {
 	logger := log.Default()
@@ -16,7 +23,15 @@ func main() {
 		logger.Panicln(err.Error())
 	}
 
-	server := InitServer()
+	// // server := InitServer()
+	// // server.Start()
 
-	server.Start()
+	fx.New(
+		src.ServerModuleFx,
+		lib.LibModuleFx,
+		middlewares.MiddlewaresModuleFx,
+		users.UsersModuleFx,
+		posts.PostsModulefx,
+		fx.Invoke(func(*http.Server) {}),
+	).Run()
 }

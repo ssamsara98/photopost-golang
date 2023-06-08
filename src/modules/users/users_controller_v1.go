@@ -8,20 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UsersControllerV1Inf interface {
-	Run(router *gin.RouterGroup)
-}
+// type UsersControllerV1Inf interface {
+// 	Run(router *gin.RouterGroup)
+// }
 
 type UsersControllerV1 struct {
 	Log               *log.Logger
 	JWTAuthMiddleware *middlewares.JWTAuthMiddleware
-	UsersService      UsersServiceV1Inf
+	UsersService      *UsersServiceV1
 }
 
 func NewUsersControllerV1(
 	log *log.Logger,
 	jwtAuthMiddleware *middlewares.JWTAuthMiddleware,
-	usersService UsersServiceV1Inf,
+	usersService *UsersServiceV1,
 ) *UsersControllerV1 {
 	return &UsersControllerV1{
 		log,

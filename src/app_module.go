@@ -9,16 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type AppModuleInf interface {
-	Router(r *gin.Engine)
-}
+// type AppModuleInf interface {
+// 	Router(r *gin.Engine)
+// }
 
 type AppModule struct {
 	Log               *log.Logger
 	DB                *gorm.DB
 	JWTAuthHelper     *lib.JWTAuthHelper
 	JWTAuthMiddleware *middlewares.JWTAuthMiddleware
-	AppController     AppControllerInf
+	AppController     *AppController
 }
 
 func NewAppModule(
@@ -26,7 +26,7 @@ func NewAppModule(
 	db *gorm.DB,
 	jwtAuthHelper *lib.JWTAuthHelper,
 	jwtAuthMiddleware *middlewares.JWTAuthMiddleware,
-	appController AppControllerInf,
+	appController *AppController,
 ) *AppModule {
 	return &AppModule{
 		log,

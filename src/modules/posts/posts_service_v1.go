@@ -8,14 +8,14 @@ import (
 	"gorm.io/gorm"
 )
 
-type PostsServiceV1Inf interface {
-	UploadPhoto(keypath *string) *entities.PostPhoto
-	CreatePost(user *entities.User, createPostDto *CreatePostReqDto) *entities.Post
-	GetPostList() []entities.Post
-	GetPost(uri *GetPostByIdParams) *entities.Post
-	GetMyPostList(user *entities.User) []entities.Post
-	GetUserPostList(uri *GetPostByUserIdParams) []entities.Post
-}
+// type PostsServiceV1Inf interface {
+// 	UploadPhoto(keypath *string) *entities.PostPhoto
+// 	CreatePost(user *entities.User, createPostDto *CreatePostReqDto) *entities.Post
+// 	GetPostList() []entities.Post
+// 	GetPost(uri *GetPostByIdParams) *entities.Post
+// 	GetMyPostList(user *entities.User) []entities.Post
+// 	GetUserPostList(uri *GetPostByUserIdParams) []entities.Post
+// }
 
 type PostsServiceV1 struct {
 	Log *log.Logger

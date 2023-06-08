@@ -10,26 +10,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type PostsControllerV1Inf interface {
-	Run(router *gin.RouterGroup)
-	UploadPhoto(c *gin.Context)
-	CreatePost(c *gin.Context)
-	GetPostList(c *gin.Context)
-	GetPost(c *gin.Context)
-}
+// type PostsControllerV1Inf interface {
+// 	Run(router *gin.RouterGroup)
+// 	UploadPhoto(c *gin.Context)
+// 	CreatePost(c *gin.Context)
+// 	GetPostList(c *gin.Context)
+// 	GetPost(c *gin.Context)
+// }
 
 type PostsControllerV1 struct {
 	Log               *log.Logger
 	S3Service         *lib.S3Service
 	JWTAuthMiddleware *middlewares.JWTAuthMiddleware
-	PostsServiceV1    PostsServiceV1Inf
+	PostsServiceV1    *PostsServiceV1
 }
 
 func NewPostsControllerV1(
 	log *log.Logger,
 	s3Service *lib.S3Service,
 	jwtAuthMiddleware *middlewares.JWTAuthMiddleware,
-	postsServiceV1 PostsServiceV1Inf,
+	postsServiceV1 *PostsServiceV1,
 ) *PostsControllerV1 {
 	return &PostsControllerV1{
 		log,

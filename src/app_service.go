@@ -9,10 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
-type AppServiceInf interface {
-	Register(body *RegisterUserDto) *entities.User
-	Login(body *LoginUserDto) (*lib.Token, error)
-}
+// type AppServiceInf interface {
+// 	Register(body *RegisterUserDto) *entities.User
+// 	Login(body *LoginUserDto) (*lib.Token, error)
+// }
 
 type AppService struct {
 	DB            *gorm.DB

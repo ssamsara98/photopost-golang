@@ -8,11 +8,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type UsersServiceV1Inf interface {
-	CreateUser(body CreateUserReqDto) *entities.User
-	GetUserList() []entities.User
-	GetUser(uri *GetUserByIdParams) *entities.User
-}
+// type UsersServiceV1Inf interface {
+// 	CreateUser(body CreateUserReqDto) *entities.User
+// 	GetUserList() []entities.User
+// 	GetUser(uri *GetUserByIdParams) *entities.User
+// }
 
 type UsersServiceV1 struct {
 	Log *log.Logger

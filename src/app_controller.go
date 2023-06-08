@@ -9,24 +9,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AppControllerInf interface {
-	Run(router *gin.Engine)
-	Greet(c *gin.Context)
-	Register(c *gin.Context)
-	Login(c *gin.Context)
-	Me(c *gin.Context)
-}
+// type AppControllerInf interface {
+// 	Run(router *gin.Engine)
+// 	Greet(c *gin.Context)
+// 	Register(c *gin.Context)
+// 	Login(c *gin.Context)
+// 	Me(c *gin.Context)
+// }
 
 type AppController struct {
 	Log               *log.Logger
 	JWTAuthMiddleware *middlewares.JWTAuthMiddleware
-	AppService        AppServiceInf
+	AppService        *AppService
 }
 
 func NewAppController(
 	log *log.Logger,
 	jwtAuthMiddleware *middlewares.JWTAuthMiddleware,
-	appService AppServiceInf,
+	appService *AppService,
 ) *AppController {
 	return &AppController{
 		log,
