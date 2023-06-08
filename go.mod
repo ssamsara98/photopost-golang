@@ -16,6 +16,7 @@ require (
 	github.com/spf13/viper v1.12.0
 	github.com/thinkerou/favicon v0.1.0
 	go.uber.org/fx v1.19.3
+	go.uber.org/zap v1.23.0
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	gorm.io/driver/postgres v1.3.7
 	gorm.io/gorm v1.23.6
@@ -72,7 +73,6 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/dig v1.16.1 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	go.uber.org/zap v1.23.0 // indirect
 	golang.org/x/net v0.1.0 // indirect
 	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.4.0 // indirect

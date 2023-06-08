@@ -2,31 +2,31 @@ package users
 
 import (
 	"go-photopost/src/middlewares"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
-// type UsersControllerV1Inf interface {
-// 	Run(router *gin.RouterGroup)
-// }
+type UsersControllerV1Inf interface {
+	Run(router *gin.RouterGroup)
+}
 
 type UsersControllerV1 struct {
-	Log               *log.Logger
+	Log               *zap.Logger
 	JWTAuthMiddleware *middlewares.JWTAuthMiddleware
-	UsersService      *UsersServiceV1
+	UsersService      UsersServiceV1Inf
 }
 
 func NewUsersControllerV1(
-	log *log.Logger,
+	log *zap.Logger,
 	jwtAuthMiddleware *middlewares.JWTAuthMiddleware,
-	usersService *UsersServiceV1,
-) *UsersControllerV1 {
+	usersService UsersServiceV1Inf,
+) UsersControllerV1Inf {
 	return &UsersControllerV1{
-		log,
-		jwtAuthMiddleware,
-		usersService,
+		Log:               log,
+		JWTAuthMiddleware: jwtAuthMiddleware,
+		UsersService:      usersService,
 	}
 }
 

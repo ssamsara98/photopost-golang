@@ -3,9 +3,9 @@ package lib
 import (
 	"errors"
 	"go-photopost/src/entities"
-	"log"
 
 	"github.com/golang-jwt/jwt/v4"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -16,14 +16,14 @@ type Token struct {
 
 // JWTAuthHelper service relating to authorization
 type JWTAuthHelper struct {
-	Log *log.Logger
+	Log *zap.Logger
 	Env *Env
 	DB  *gorm.DB
 }
 
 // NewJWTAuthHelper creates a new auth service
 func NewJWTAuthHelper(
-	log *log.Logger,
+	log *zap.Logger,
 	env *Env,
 	db *gorm.DB,
 ) *JWTAuthHelper {
@@ -46,7 +46,7 @@ func (j JWTAuthHelper) CreateToken(user entities.User) *Token {
 	tokenString, err := token.SignedString([]byte(j.Env.JWTSecret))
 
 	if err != nil {
-		j.Log.Println("JWT validation failed: ", err)
+		j.Log.Sugar().Infof("JWT validation failed: ", err)
 	}
 
 	return &Token{

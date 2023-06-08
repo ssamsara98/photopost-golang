@@ -2,20 +2,20 @@ package middlewares
 
 import (
 	"go-photopost/src/lib"
-	"log"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type JWTAuthMiddleware struct {
-	Log           *log.Logger
+	Log           *zap.Logger
 	JWTAuthHelper *lib.JWTAuthHelper
 }
 
 func NewJWTAuthMiddleware(
-	log *log.Logger,
+	log *zap.Logger,
 	jwtHelper *lib.JWTAuthHelper,
 ) *JWTAuthMiddleware {
 	return &JWTAuthMiddleware{
@@ -41,7 +41,7 @@ func (m JWTAuthMiddleware) Handler() gin.HandlerFunc {
 				"statusCode": http.StatusUnauthorized,
 				"message":    err.Error(),
 			})
-			m.Log.Println(err)
+			m.Log.Sugar().Infoln(err)
 			c.Abort()
 			return
 		}

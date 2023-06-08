@@ -1,4 +1,4 @@
-package src
+package app
 
 type RegisterUserDto struct {
 	Email    string `form:"email"`

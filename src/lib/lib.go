@@ -1,14 +1,12 @@
 package lib
 
 import (
-	"log"
-
 	"go.uber.org/fx"
 )
 
 var LibModuleFx = fx.Options(
 	fx.Provide(
-		log.Default,
+		// log.Default,
 		NewEnv,
 		NewDatabase,
 		NewJWTAuthHelper,

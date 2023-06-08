@@ -15,16 +15,17 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/google/uuid"
 	gonanoid "github.com/matoous/go-nanoid/v2"
+	"go.uber.org/zap"
 )
 
 type S3Service struct {
 	Env *Env
-	Log *log.Logger
+	Log *zap.Logger
 }
 
 func NewS3Service(
 	env *Env,
-	log *log.Logger,
+	log *zap.Logger,
 ) *S3Service {
 	return &S3Service{
 		env,

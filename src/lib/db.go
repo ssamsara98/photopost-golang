@@ -3,13 +3,13 @@ package lib
 import (
 	"fmt"
 	"go-photopost/src/entities"
-	"log"
 
+	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func NewDatabase(logger *log.Logger, env *Env) *gorm.DB {
+func NewDatabase(logger *zap.Logger, env *Env) *gorm.DB {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s",
 		env.DBHost,
@@ -21,7 +21,7 @@ func NewDatabase(logger *log.Logger, env *Env) *gorm.DB {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		logger.Println(err.Error())
+		logger.Sugar().Infoln(err.Error())
 		panic("failed to connect database")
 	}
 

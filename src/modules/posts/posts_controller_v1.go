@@ -4,33 +4,33 @@ import (
 	"go-photopost/src/entities"
 	"go-photopost/src/lib"
 	"go-photopost/src/middlewares"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
-// type PostsControllerV1Inf interface {
-// 	Run(router *gin.RouterGroup)
-// 	UploadPhoto(c *gin.Context)
-// 	CreatePost(c *gin.Context)
-// 	GetPostList(c *gin.Context)
-// 	GetPost(c *gin.Context)
-// }
+type PostsControllerV1Inf interface {
+	Run(router *gin.RouterGroup)
+	UploadPhoto(c *gin.Context)
+	CreatePost(c *gin.Context)
+	GetPostList(c *gin.Context)
+	GetPost(c *gin.Context)
+}
 
 type PostsControllerV1 struct {
-	Log               *log.Logger
+	Log               *zap.Logger
 	S3Service         *lib.S3Service
 	JWTAuthMiddleware *middlewares.JWTAuthMiddleware
-	PostsServiceV1    *PostsServiceV1
+	PostsServiceV1    PostsServiceV1Inf
 }
 
 func NewPostsControllerV1(
-	log *log.Logger,
+	log *zap.Logger,
 	s3Service *lib.S3Service,
 	jwtAuthMiddleware *middlewares.JWTAuthMiddleware,
-	postsServiceV1 *PostsServiceV1,
-) *PostsControllerV1 {
+	postsServiceV1 PostsServiceV1Inf,
+) PostsControllerV1Inf {
 	return &PostsControllerV1{
 		log,
 		s3Service,

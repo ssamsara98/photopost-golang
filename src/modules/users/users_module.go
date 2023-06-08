@@ -5,19 +5,19 @@ import (
 	"go.uber.org/fx"
 )
 
-// type UsersModuleInf interface {
-// 	Router(rg *gin.RouterGroup)
-// }
+type UsersModuleInf interface {
+	Router(rg *gin.RouterGroup)
+}
 
 type UsersModule struct {
-	UsersControllerV1 *UsersControllerV1
+	UsersControllerV1 UsersControllerV1Inf
 }
 
 func NewUsersModule(
-	usersControllerV1 *UsersControllerV1,
-) *UsersModule {
+	usersControllerV1 UsersControllerV1Inf,
+) UsersModuleInf {
 	return &UsersModule{
-		usersControllerV1,
+		UsersControllerV1: usersControllerV1,
 	}
 }
 

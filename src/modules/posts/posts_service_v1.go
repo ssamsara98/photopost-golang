@@ -3,29 +3,29 @@ package posts
 import (
 	"fmt"
 	"go-photopost/src/entities"
-	"log"
 
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
-// type PostsServiceV1Inf interface {
-// 	UploadPhoto(keypath *string) *entities.PostPhoto
-// 	CreatePost(user *entities.User, createPostDto *CreatePostReqDto) *entities.Post
-// 	GetPostList() []entities.Post
-// 	GetPost(uri *GetPostByIdParams) *entities.Post
-// 	GetMyPostList(user *entities.User) []entities.Post
-// 	GetUserPostList(uri *GetPostByUserIdParams) []entities.Post
-// }
+type PostsServiceV1Inf interface {
+	UploadPhoto(keypath *string) *entities.PostPhoto
+	CreatePost(user *entities.User, createPostDto *CreatePostReqDto) *entities.Post
+	GetPostList() []entities.Post
+	GetPost(uri *GetPostByIdParams) *entities.Post
+	GetMyPostList(user *entities.User) []entities.Post
+	GetUserPostList(uri *GetPostByUserIdParams) []entities.Post
+}
 
 type PostsServiceV1 struct {
-	Log *log.Logger
+	Log *zap.Logger
 	DB  *gorm.DB
 }
 
 func NewPostsServiceV1(
-	log *log.Logger,
+	log *zap.Logger,
 	db *gorm.DB,
-) *PostsServiceV1 {
+) PostsServiceV1Inf {
 	return &PostsServiceV1{
 		Log: log,
 		DB:  db,

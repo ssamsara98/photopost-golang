@@ -4,6 +4,7 @@ import (
 	"go-photopost/src"
 	"go-photopost/src/lib"
 	"go-photopost/src/middlewares"
+	"go-photopost/src/modules/app"
 	"go-photopost/src/modules/posts"
 	"go-photopost/src/modules/users"
 	"log"
@@ -30,6 +31,7 @@ func main() {
 		src.ServerModuleFx,
 		lib.LibModuleFx,
 		middlewares.MiddlewaresModuleFx,
+		app.AppModuleFx,
 		users.UsersModuleFx,
 		posts.PostsModulefx,
 		fx.Invoke(func(*http.Server) {}),

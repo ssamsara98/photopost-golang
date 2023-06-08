@@ -1,33 +1,33 @@
-package src
+package app
 
 import (
 	"go-photopost/src/entities"
 	"go-photopost/src/middlewares"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
-// type AppControllerInf interface {
-// 	Run(router *gin.Engine)
-// 	Greet(c *gin.Context)
-// 	Register(c *gin.Context)
-// 	Login(c *gin.Context)
-// 	Me(c *gin.Context)
-// }
+type AppControllerInf interface {
+	Run(router *gin.Engine)
+	Greet(c *gin.Context)
+	Register(c *gin.Context)
+	Login(c *gin.Context)
+	Me(c *gin.Context)
+}
 
 type AppController struct {
-	Log               *log.Logger
+	Log               *zap.Logger
 	JWTAuthMiddleware *middlewares.JWTAuthMiddleware
-	AppService        *AppService
+	AppService        AppServiceInf
 }
 
 func NewAppController(
-	log *log.Logger,
+	log *zap.Logger,
 	jwtAuthMiddleware *middlewares.JWTAuthMiddleware,
-	appService *AppService,
-) *AppController {
+	appService AppServiceInf,
+) AppControllerInf {
 	return &AppController{
 		log,
 		jwtAuthMiddleware,
@@ -77,7 +77,7 @@ func (app AppController) Me(c *gin.Context) {
 	userAny, _ := c.Get("user")
 	user := userAny.(*entities.User)
 
-	app.Log.Println(user)
+	app.Log.Sugar().Infoln(user)
 
 	c.JSON(http.StatusOK, user)
 }

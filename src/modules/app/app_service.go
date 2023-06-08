@@ -1,4 +1,4 @@
-package src
+package app
 
 import (
 	"errors"
@@ -6,24 +6,28 @@ import (
 	"go-photopost/src/helpers"
 	"go-photopost/src/lib"
 
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
-// type AppServiceInf interface {
-// 	Register(body *RegisterUserDto) *entities.User
-// 	Login(body *LoginUserDto) (*lib.Token, error)
-// }
+type AppServiceInf interface {
+	Register(body *RegisterUserDto) *entities.User
+	Login(body *LoginUserDto) (*lib.Token, error)
+}
 
 type AppService struct {
+	Log           *zap.Logger
 	DB            *gorm.DB
 	JWTAuthHelper *lib.JWTAuthHelper
 }
 
 func NewAppService(
+	log *zap.Logger,
 	db *gorm.DB,
 	jwtAuthHelper *lib.JWTAuthHelper,
-) *AppService {
+) AppServiceInf {
 	return &AppService{
+		log,
 		db,
 		jwtAuthHelper,
 	}
