@@ -1,0 +1,4 @@
+runtime: go120  # or another supported version
+
+includes:
+  - .env_variables.yaml

@@ -10,6 +10,7 @@ import (
 	"go-photopost/src/modules/users"
 	"net"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thinkerou/favicon"
@@ -49,6 +50,10 @@ func NewServer(
 	port := ":8080"
 	if env.ServerPort != "" {
 		port = fmt.Sprintf(":%v", env.ServerPort)
+	}
+	envPort := os.Getenv("PORT")
+	if envPort != "" {
+		port = fmt.Sprintf(":%v", envPort)
 	}
 	srv := &http.Server{
 		Addr:    port,

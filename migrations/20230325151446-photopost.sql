@@ -1,5 +1,7 @@
 
 -- +migrate Up
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE IF NOT EXISTS users (
     id bigint NOT NULL,
     created_at timestamp DEFAULT now(),
@@ -17,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
     UNIQUE ("username")
 );
 
-CREATE TABLE IF NOT EXISTS post (
+CREATE TABLE IF NOT EXISTS posts (
   id bigint NOT NULL,
   created_at timestamp DEFAULT now(),
   updated_at timestamp DEFAULT now(),

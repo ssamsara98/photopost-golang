@@ -16,4 +16,7 @@
 
 # Custom
 .env
+.env.local
+.env.*.local
+.env_variables.yaml
 wire_gen.go
