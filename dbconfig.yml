@@ -1,5 +1,4 @@
 development:
-  dialect: postgres
-  datasource: ${DB_USER}:${DB_PASS}@tcp(${DB_HOST}:${DB_PORT})/${DB_NAME}?parseTime=true
-  dir: migrations
-  table: migrations
+    dialect: postgres
+    datasource: user=${DB_USER} password=${DB_PASS} host=${DB_HOST} port=${DB_PORT} dbname=${DB_NAME} sslmode=disable
+    dir: migration/

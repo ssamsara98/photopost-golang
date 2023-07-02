@@ -19,4 +19,6 @@
 .env.local
 .env.*.local
 .env_variables.yaml
+app.yaml
 wire_gen.go
+__debug_bin

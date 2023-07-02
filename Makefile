@@ -1,11 +1,11 @@
 include .env
+export
 
-# MIGRATE=docker-compose exec web sql-migrate
-MIGRATE=sql-migrate
+MIGRATE=docker-compose exec web sql-migrate
 
-# ifeq ($(p),host)
-# 	MIGRATE=sql-migrate
-# endif
+ifeq ($(p),host)
+	MIGRATE=sql-migrate
+endif
 
 migrate-status:
 	$(MIGRATE) status
@@ -27,4 +27,10 @@ create:
 	@read -p  "What is the name of migration?" NAME; \
 	${MIGRATE} new $$NAME
 
-.PHONY: migrate-status migrate-up migrate-down redo create
+lint-setup:
+	python3 -m ensurepip --upgrade
+	sudo pip3 install pre-commit
+	pre-commit install
+	pre-commit autoupdate
+
+.PHONY: migrate-status migrate-up migrate-down redo create lint-setup
