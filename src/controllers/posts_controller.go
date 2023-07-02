@@ -10,6 +10,7 @@ import (
 	"photopost/utils"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type PostsController struct {
@@ -64,8 +65,9 @@ func (p PostsController) CreatePost(c *gin.Context) {
 	}
 
 	user, _ := c.MustGet(constants.User).(*models.User)
+	trxHandle, _ := c.MustGet(constants.DBTransaction).(*gorm.DB)
 
-	result := p.postsService.CreatePost(user, body)
+	result := p.postsService.WithTrx(trxHandle).CreatePost(user, body)
 	c.JSON(http.StatusOK, result)
 }
 

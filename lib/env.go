@@ -22,9 +22,7 @@ type Env struct {
 	AWSRegion          string `mapstructure:"AWS_REGION"`
 	AWSS3Bucket        string `mapstructure:"AWS_S3_BUCKET"`
 
-	TimeZone      string `mapstructure:"TIMEZONE"`
-	AdminEmail    string `mapstructure:"ADMIN_EMAIL"`
-	AdminPassword string `mapstructure:"ADMIN_PASSWORD"`
+	TimeZone string `mapstructure:"TIMEZONE"`
 }
 
 var globalEnv = Env{

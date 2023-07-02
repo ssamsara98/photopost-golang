@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"photopost/infrastructure"
 	"photopost/lib"
 	"photopost/models"
@@ -27,6 +26,12 @@ func NewPostsService(
 	}
 }
 
+// WithTrx delegates transaction to repository database
+func (p PostsService) WithTrx(trxHandle *gorm.DB) PostsService {
+	p.db = p.db.WithTrx(trxHandle)
+	return p
+}
+
 // PaginationScope
 func (p PostsService) SetPaginationScope(scope func(*gorm.DB) *gorm.DB) PostsService {
 	p.paginationScope = p.db.WithTrx(p.db.Scopes(scope)).DB
@@ -43,31 +48,22 @@ func (p PostsService) UploadPhoto(keypath *string) *models.PostPhoto {
 }
 
 func (p PostsService) CreatePost(user *models.User, createPostDto *dto.CreatePostReqDto) *models.Post {
-	fmt.Println(createPostDto.PhotoIds)
+	newPost := &models.Post{
+		AuthorID: user.ID,
+		Caption:  createPostDto.Caption,
+	}
+	p.db.Create(newPost)
 
-	var newPost *models.Post
-
-	_ = p.db.Transaction(func(tx *gorm.DB) error {
-		newPost = &models.Post{
-			AuthorID: user.ID,
-			Caption:  createPostDto.Caption,
+	postPhotoJoins := make([]*models.PostToPhoto, 0)
+	for i := 0; i < len(createPostDto.PhotoIds); i++ {
+		newPostPhoto := &models.PostToPhoto{
+			Position: uint(i),
+			PostID:   newPost.ID,
+			PhotoID:  createPostDto.PhotoIds[i],
 		}
-		tx.Create(newPost)
-
-		postPhotoJoins := make([]*models.PostToPhoto, 0)
-		for i := 0; i < len(createPostDto.PhotoIds); i++ {
-			newPostPhoto := &models.PostToPhoto{
-				Position: uint(i),
-				PostID:   newPost.ID,
-				PhotoID:  createPostDto.PhotoIds[i],
-			}
-
-			postPhotoJoins = append(postPhotoJoins, newPostPhoto)
-		}
-		tx.Create(&postPhotoJoins)
-
-		return nil
-	})
+		postPhotoJoins = append(postPhotoJoins, newPostPhoto)
+	}
+	p.db.Create(&postPhotoJoins)
 
 	return newPost
 }
