@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"go-clean-arch/constants"
+	"photopost/constants"
 
 	"github.com/gin-gonic/gin"
 )

@@ -2,11 +2,11 @@ package services
 
 import (
 	"errors"
-	"go-clean-arch/infrastructure"
-	"go-clean-arch/lib"
-	"go-clean-arch/models"
-	"go-clean-arch/src/dto"
-	"go-clean-arch/utils"
+	"photopost/infrastructure"
+	"photopost/lib"
+	"photopost/models"
+	"photopost/src/dto"
+	"photopost/utils"
 
 	"gorm.io/gorm"
 )
@@ -90,6 +90,7 @@ func (app AppService) UpdateProfile(id uint, body *dto.UpdateProfile) error {
 	user := &models.User{
 		ModelBase: lib.ModelBase{ID: id},
 		Name:      body.Name,
+		SexType:   body.SexType,
 		Birthdate: body.Birthdate,
 	}
 

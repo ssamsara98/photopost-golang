@@ -17,6 +17,11 @@ type Env struct {
 	MaxMultipartMemory int64  `mapstructure:"MAX_MULTIPART_MEMORY"`
 	JWTSecret          string `mapstructure:"JWT_SECRET"`
 
+	AWSAccessKeyID     string `mapstructure:"AWS_ACCESS_KEY_ID"`
+	AWSSecretAccessKey string `mapstructure:"AWS_SECRET_ACCESS_KEY"`
+	AWSRegion          string `mapstructure:"AWS_REGION"`
+	AWSS3Bucket        string `mapstructure:"AWS_S3_BUCKET"`
+
 	TimeZone      string `mapstructure:"TIMEZONE"`
 	AdminEmail    string `mapstructure:"ADMIN_EMAIL"`
 	AdminPassword string `mapstructure:"ADMIN_PASSWORD"`

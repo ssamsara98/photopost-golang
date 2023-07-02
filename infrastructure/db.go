@@ -2,7 +2,7 @@ package infrastructure
 
 import (
 	"fmt"
-	"go-clean-arch/lib"
+	"photopost/lib"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

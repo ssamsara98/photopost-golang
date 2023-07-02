@@ -11,4 +11,4 @@ COPY ["../go.mod", "../go.sum", "./"]
 RUN go mod download
 COPY . .
 
-CMD sh /app/docker/run.sh
+CMD ["sh", "/app/docker/run.sh"]

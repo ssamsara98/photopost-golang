@@ -1,13 +1,13 @@
 package controllers
 
 import (
-	"go-clean-arch/constants"
-	"go-clean-arch/lib"
-	"go-clean-arch/models"
-	"go-clean-arch/src/dto"
-	"go-clean-arch/src/services"
-	"go-clean-arch/utils"
 	"net/http"
+	"photopost/constants"
+	"photopost/lib"
+	"photopost/models"
+	"photopost/src/dto"
+	"photopost/src/services"
+	"photopost/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,20 +33,20 @@ func (app AppController) Home(c *gin.Context) {
 }
 
 func (app AppController) Register(c *gin.Context) {
-	var body dto.RegisterUserDto
-	err := c.Bind(&body)
+	body := new(dto.RegisterUserDto)
+	err := c.Bind(body)
 	if err != nil {
 		utils.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
 
-	err = app.appService.FindEmailUsername(&body)
+	err = app.appService.FindEmailUsername(body)
 	if err != nil {
 		utils.ErrorJSON(c, http.StatusConflict, err)
 		return
 	}
 
-	user, err := app.appService.Register(&body)
+	user, err := app.appService.Register(body)
 	if err != nil {
 		utils.ErrorJSON(c, http.StatusInternalServerError, err)
 		return
@@ -56,14 +56,14 @@ func (app AppController) Register(c *gin.Context) {
 }
 
 func (app AppController) Login(c *gin.Context) {
-	var body dto.LoginUserDto
-	err := c.Bind(&body)
+	body := new(dto.LoginUserDto)
+	err := c.Bind(body)
 	if err != nil {
 		utils.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
 
-	token, err := app.appService.Login(&body)
+	token, err := app.appService.Login(body)
 	if err != nil {
 		utils.ErrorJSON(c, http.StatusUnauthorized, err)
 		return
@@ -79,15 +79,15 @@ func (app AppController) Me(c *gin.Context) {
 }
 
 func (app AppController) UpdateProfile(c *gin.Context) {
-	var body dto.UpdateProfile
-	err := c.Bind(&body)
+	body := new(dto.UpdateProfile)
+	err := c.Bind(body)
 	if err != nil {
 		utils.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
 
 	user, _ := c.MustGet(constants.User).(*models.User)
-	err = app.appService.UpdateProfile(user.ID, &body)
+	err = app.appService.UpdateProfile(user.ID, body)
 	if err != nil {
 		utils.ErrorJSON(c, http.StatusInternalServerError, err)
 		return

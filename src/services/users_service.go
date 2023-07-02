@@ -1,10 +1,10 @@
 package services
 
 import (
-	"go-clean-arch/infrastructure"
-	"go-clean-arch/lib"
-	"go-clean-arch/models"
-	"go-clean-arch/src/dto"
+	"photopost/infrastructure"
+	"photopost/lib"
+	"photopost/models"
+	"photopost/src/dto"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -27,16 +27,16 @@ func NewUsersService(
 }
 
 // PaginationScope
-func (s UsersService) SetPaginationScope(scope func(*gorm.DB) *gorm.DB) UsersService {
-	s.paginationScope = s.db.WithTrx(s.db.Scopes(scope)).DB
-	return s
+func (u UsersService) SetPaginationScope(scope func(*gorm.DB) *gorm.DB) UsersService {
+	u.paginationScope = u.db.WithTrx(u.db.Scopes(scope)).DB
+	return u
 }
 
-func (s UsersService) GetUserList() (response gin.H, err error) {
+func (u UsersService) GetUserList() (response gin.H, err error) {
 	var users []models.User
 	var count int64
 
-	err = s.db.WithTrx(s.paginationScope).Find(&users).Offset(-1).Limit(-1).Count(&count).Error
+	err = u.db.WithTrx(u.paginationScope).Find(&users).Offset(-1).Limit(-1).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}
@@ -44,6 +44,6 @@ func (s UsersService) GetUserList() (response gin.H, err error) {
 	return gin.H{"result": users, "count": count}, nil
 }
 
-func (s UsersService) GetUserByID(uri *dto.GetUserByIDParams) (user models.User, err error) {
-	return user, s.db.First(&user, "id = ?", uri.ID).Error
+func (u UsersService) GetUserByID(uri *dto.GetUserByIDParams) (user models.User, err error) {
+	return user, u.db.First(&user, "id = ?", uri.ID).Error
 }

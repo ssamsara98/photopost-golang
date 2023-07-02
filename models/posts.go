@@ -1,6 +1,6 @@
 package models
 
-import "go-clean-arch/lib"
+import "photopost/lib"
 
 // Post model
 type Post struct {

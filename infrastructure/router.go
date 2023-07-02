@@ -1,9 +1,9 @@
 package infrastructure
 
 import (
-	"go-clean-arch/lib"
-	"go-clean-arch/utils"
 	"net/http"
+	"photopost/lib"
+	"photopost/utils"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

@@ -2,8 +2,8 @@ package commands
 
 import (
 	"context"
-	"go-clean-arch/commands/cmd"
-	"go-clean-arch/lib"
+	"photopost/commands/cmd"
+	"photopost/lib"
 
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"

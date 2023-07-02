@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"go-clean-arch/lib"
-	"go-clean-arch/src/dto"
-	"go-clean-arch/src/services"
-	"go-clean-arch/utils"
 	"net/http"
+	"photopost/lib"
+	"photopost/src/dto"
+	"photopost/src/services"
+	"photopost/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,24 +26,24 @@ func NewUsersController(
 }
 
 func (u UsersController) GetUserList(c *gin.Context) {
-	users, err := u.usersService.SetPaginationScope(utils.Paginate(c)).GetUserList()
+	result, err := u.usersService.SetPaginationScope(utils.Paginate(c)).GetUserList()
 	if err != nil {
 		utils.ErrorJSON(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	utils.JSONWithPagination(c, http.StatusOK, users)
+	utils.JSONWithPagination(c, http.StatusOK, result)
 }
 
 func (u UsersController) GetUserByID(c *gin.Context) {
-	var uri dto.GetUserByIDParams
-	err := c.ShouldBindUri(&uri)
+	uri := new(dto.GetUserByIDParams)
+	err := c.ShouldBindUri(uri)
 	if err != nil {
 		utils.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
 
-	user, err := u.usersService.GetUserByID(&uri)
+	user, err := u.usersService.GetUserByID(uri)
 	if err != nil {
 		utils.ErrorJSON(c, http.StatusNotFound, err)
 		return

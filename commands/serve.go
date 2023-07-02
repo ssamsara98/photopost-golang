@@ -2,12 +2,12 @@ package commands
 
 import (
 	"context"
-	"go-clean-arch/infrastructure"
-	"go-clean-arch/lib"
-	"go-clean-arch/src/middlewares"
-	"go-clean-arch/src/routes"
 	"net"
 	"net/http"
+	"photopost/infrastructure"
+	"photopost/lib"
+	"photopost/src/middlewares"
+	"photopost/src/routes"
 	"time"
 
 	"github.com/spf13/cobra"

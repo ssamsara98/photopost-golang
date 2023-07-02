@@ -1,8 +1,8 @@
 package middlewares
 
 import (
-	"go-clean-arch/constants"
-	"go-clean-arch/lib"
+	"photopost/constants"
+	"photopost/lib"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +18,7 @@ func NewPaginationMiddleware(logger lib.Logger) *PaginationMiddleware {
 
 func (p PaginationMiddleware) Handle() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		p.logger.Info("setting up pagination middleware")
+		p.logger.Debug("setting up pagination middleware")
 
 		limit, err := strconv.ParseInt(c.Query("limit"), 10, 0)
 		if err != nil {

@@ -2,7 +2,7 @@
 -- +migrate Up
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TYPE "public"."users_sex_type_enum" AS ENUM('Unknown', 'Male', 'Female', 'Other');
+CREATE TYPE "public"."users_sex_type_enum" AS ENUM('unknown', 'male', 'female', 'other');
 
 CREATE TABLE IF NOT EXISTS "users" (
   "id" bigserial NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS "users" (
   "username" character varying NOT NULL,
   "password" character varying NOT NULL,
   "name" character varying NOT NULL,
-  "sex_type" "public"."users_sex_type_enum" DEFAULT 'Unknown',
+  "sex_type" "public"."users_sex_type_enum" DEFAULT 'unknown',
   "birthdate" date,
 
   PRIMARY KEY ("id"),

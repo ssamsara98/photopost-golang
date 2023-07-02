@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"go-clean-arch/constants"
-	"go-clean-arch/lib"
 	"net/http"
+	"photopost/constants"
+	"photopost/lib"
 	"strconv"
 	"time"
 

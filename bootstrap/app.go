@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"go-clean-arch/commands"
+	"photopost/commands"
 
 	"github.com/spf13/cobra"
 )

@@ -2,8 +2,8 @@ package infrastructure
 
 import (
 	"errors"
-	"go-clean-arch/lib"
-	"go-clean-arch/models"
+	"photopost/lib"
+	"photopost/models"
 
 	"github.com/golang-jwt/jwt/v4"
 )

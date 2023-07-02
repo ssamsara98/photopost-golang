@@ -2,11 +2,11 @@ package middlewares
 
 import (
 	"errors"
-	"go-clean-arch/constants"
-	"go-clean-arch/infrastructure"
-	"go-clean-arch/lib"
-	"go-clean-arch/utils"
 	"net/http"
+	"photopost/constants"
+	"photopost/infrastructure"
+	"photopost/lib"
+	"photopost/utils"
 	"strings"
 
 	"github.com/gin-gonic/gin"

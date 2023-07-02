@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"go-clean-arch/lib"
+	"photopost/lib"
 
 	migrate "github.com/rubenv/sql-migrate"
 )

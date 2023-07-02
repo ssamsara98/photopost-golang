@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"go-clean-arch/infrastructure"
-	"go-clean-arch/src/controllers"
-	"go-clean-arch/src/middlewares"
+	"photopost/infrastructure"
+	"photopost/src/controllers"
+	"photopost/src/middlewares"
 )
 
 type AppRoutes struct {

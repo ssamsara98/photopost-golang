@@ -1,7 +1,7 @@
 package models
 
 import (
-	"go-clean-arch/lib"
+	"photopost/lib"
 	"time"
 )
 
@@ -12,6 +12,6 @@ type User struct {
 	Username  *string    `json:"username" gorm:"unique"`
 	Password  string     `json:"password"`
 	Name      string     `json:"name"`
-	SexType   string     `json:"sexType" gorm:"default:'Unknown'"`
+	SexType   string     `json:"sexType" gorm:"default:'unknown'"`
 	Birthdate *time.Time `json:"birthdate"`
 }

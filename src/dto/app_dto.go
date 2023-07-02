@@ -16,5 +16,6 @@ type LoginUserDto struct {
 
 type UpdateProfile struct {
 	Name      string     `form:"name"`
-	Birthdate *time.Time `form:"birthdate" time_format:"xxxx-xx-xx"`
+	SexType   string     `form:"sexType"`
+	Birthdate *time.Time `form:"birthdate" time_format:"2006-01-02"`
 }

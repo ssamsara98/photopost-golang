@@ -4,13 +4,13 @@ CREATE TABLE IF NOT EXISTS "post_to_photos" (
   "created_at" timestamp NOT NULL DEFAULT now(),
   "updated_at" timestamp NOT NULL DEFAULT now(),
   "deleted_at" timestamp,
-  "position" bigint DEFAULT 0 NOT NULL,
-  "post_id" bigserial NOT NULL,
+  "position" integer DEFAULT 0 NOT NULL,
+  "post_id" bigint NOT NULL,
   "photo_id" uuid NOT NULL,
 
   PRIMARY KEY ("id"),
-  FOREIGN KEY ("post_id") REFERENCES posts ("id"),
-  FOREIGN KEY ("photo_id") REFERENCES post_photos ("id")
+  FOREIGN KEY ("post_id") REFERENCES "posts" ("id"),
+  FOREIGN KEY ("photo_id") REFERENCES "post_photos" ("id")
 );
 
 -- +migrate Down

@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"go-clean-arch/lib"
 	"math/rand"
+	"photopost/lib"
 	"time"
 
 	"github.com/spf13/cobra"

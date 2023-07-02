@@ -1,12 +1,12 @@
 package bootstrap
 
 import (
-	"go-clean-arch/infrastructure"
-	"go-clean-arch/lib"
-	"go-clean-arch/src/controllers"
-	"go-clean-arch/src/middlewares"
-	"go-clean-arch/src/routes"
-	"go-clean-arch/src/services"
+	"photopost/infrastructure"
+	"photopost/lib"
+	"photopost/src/controllers"
+	"photopost/src/middlewares"
+	"photopost/src/routes"
+	"photopost/src/services"
 
 	"go.uber.org/fx"
 )
