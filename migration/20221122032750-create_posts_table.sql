@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS "posts" (
   "is_published" boolean NOT NULL DEFAULT true,
 
   PRIMARY KEY ("id"),
-  FOREIGN KEY ("author_id") REFERENCES "users" ("id")
+  FOREIGN KEY ("author_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- +migrate Down

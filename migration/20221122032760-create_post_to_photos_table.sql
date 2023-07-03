@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS "post_to_photos" (
   "photo_id" uuid NOT NULL,
 
   PRIMARY KEY ("id"),
-  FOREIGN KEY ("post_id") REFERENCES "posts" ("id"),
-  FOREIGN KEY ("photo_id") REFERENCES "post_photos" ("id")
+  FOREIGN KEY ("post_id") REFERENCES "posts"("id"),
+  FOREIGN KEY ("photo_id") REFERENCES "post_photos"("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- +migrate Down

@@ -1,6 +1,6 @@
 -- +migrate Up
 CREATE TABLE IF NOT EXISTS "post_photos" (
-  "id" uuid DEFAULT uuid_generate_v4() NOT NULL,
+  "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
   "created_at" timestamp NOT NULL DEFAULT now(),
   "updated_at" timestamp NOT NULL DEFAULT now(),
   "deleted_at" timestamp,
