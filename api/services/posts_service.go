@@ -1,10 +1,10 @@
 package services
 
 import (
+	"photopost/api/dto"
 	"photopost/infrastructure"
 	"photopost/lib"
 	"photopost/models"
-	"photopost/src/dto"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

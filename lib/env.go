@@ -1,6 +1,10 @@
 package lib
 
-import "github.com/spf13/viper"
+import (
+	"time"
+
+	"github.com/spf13/viper"
+)
 
 type Env struct {
 	ServerPort  string `mapstructure:"SERVER_PORT"`
@@ -14,8 +18,10 @@ type Env struct {
 	DBName     string `mapstructure:"DB_NAME"`
 	DBType     string `mapstructure:"DB_TYPE"`
 
-	MaxMultipartMemory int64  `mapstructure:"MAX_MULTIPART_MEMORY"`
-	JWTSecret          string `mapstructure:"JWT_SECRET"`
+	MaxMultipartMemory   int64         `mapstructure:"MAX_MULTIPART_MEMORY"`
+	JWTSecret            string        `mapstructure:"JWT_SECRET"`
+	AccessTokenDuration  time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION"`
 
 	AWSAccessKeyID     string `mapstructure:"AWS_ACCESS_KEY_ID"`
 	AWSSecretAccessKey string `mapstructure:"AWS_SECRET_ACCESS_KEY"`
@@ -34,6 +40,8 @@ func GetEnv() Env {
 }
 
 func NewEnv(logger Logger) *Env {
+	viper.SetConfigName("app")
+	viper.SetConfigType("env")
 	viper.SetConfigFile(".env")
 
 	err := viper.ReadInConfig()
@@ -42,6 +50,8 @@ func NewEnv(logger Logger) *Env {
 	}
 
 	viper.SetDefault("TIMEZONE", "UTC")
+	viper.SetDefault("AccessTokenDuration", "15m")
+	viper.SetDefault("RefreshTokenDuration", "24h")
 
 	err = viper.Unmarshal(&globalEnv)
 	if err != nil {

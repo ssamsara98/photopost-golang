@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"net/http"
+	"photopost/api/dto"
+	"photopost/api/services"
 	"photopost/constants"
 	"photopost/lib"
 	"photopost/models"
-	"photopost/src/dto"
-	"photopost/src/services"
 	"photopost/utils"
 
 	"github.com/gin-gonic/gin"

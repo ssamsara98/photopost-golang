@@ -3,8 +3,8 @@ package routes
 import (
 	"errors"
 	"net/http"
+	"photopost/api/middlewares"
 	"photopost/infrastructure"
-	"photopost/src/middlewares"
 	"photopost/utils"
 
 	"github.com/gin-gonic/gin"

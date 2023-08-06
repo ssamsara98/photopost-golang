@@ -1,9 +1,9 @@
 package routes
 
 import (
+	"photopost/api/controllers"
+	"photopost/api/middlewares"
 	"photopost/infrastructure"
-	"photopost/src/controllers"
-	"photopost/src/middlewares"
 )
 
 type AppRoutes struct {
@@ -27,4 +27,6 @@ func (app AppRoutes) Run(handler infrastructure.Router) {
 	handler.POST("/login", app.appController.Login)
 	handler.GET("/me", app.jwtAuthMiddleware.Handle(), app.appController.Me)
 	handler.PATCH("/me", app.jwtAuthMiddleware.Handle(), app.appController.UpdateProfile)
+	handler.GET("/token-check", app.appController.TokenCheck)
+	handler.POST("/token-renew", app.appController.TokenRenew)
 }

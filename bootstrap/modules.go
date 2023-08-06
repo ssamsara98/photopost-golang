@@ -1,12 +1,12 @@
 package bootstrap
 
 import (
+	"photopost/api/controllers"
+	"photopost/api/middlewares"
+	"photopost/api/routes"
+	"photopost/api/services"
 	"photopost/infrastructure"
 	"photopost/lib"
-	"photopost/src/controllers"
-	"photopost/src/middlewares"
-	"photopost/src/routes"
-	"photopost/src/services"
 
 	"go.uber.org/fx"
 )

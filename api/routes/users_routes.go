@@ -1,9 +1,9 @@
 package routes
 
 import (
+	"photopost/api/controllers"
+	"photopost/api/middlewares"
 	"photopost/lib"
-	"photopost/src/controllers"
-	"photopost/src/middlewares"
 
 	"github.com/gin-gonic/gin"
 )

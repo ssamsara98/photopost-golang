@@ -4,10 +4,10 @@ import (
 	"context"
 	"net"
 	"net/http"
+	"photopost/api/middlewares"
+	"photopost/api/routes"
 	"photopost/infrastructure"
 	"photopost/lib"
-	"photopost/src/middlewares"
-	"photopost/src/routes"
 	"time"
 
 	"github.com/spf13/cobra"
