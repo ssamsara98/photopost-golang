@@ -1,0 +1,49 @@
+name: photopost
+
+services:
+  web:
+    # container_name: clean-arch-web
+    image: ssamsara98/photopost:dev
+    build:
+      context: ../
+      dockerfile: ./docker/web.Dockerfile
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - ${DEBUG_PORT}:2345
+    volumes:
+      - ..:/app
+    env_file: ../.env
+    security_opt:
+      - seccomp:unconfined
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    # container_name: clean-arch-db
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASS}"
+      POSTGRES_DB: "${DB_NAME}"
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "sh -c 'pg_isready -U ${DB_USER} -d ${DB_NAME}'"
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  adminer:
+    image: adminer:4.8.1
+    ports:
+      - ${ADMINER_PORT}:8080
+
+volumes:
+  pgdata:
