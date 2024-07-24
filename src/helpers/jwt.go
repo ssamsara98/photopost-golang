@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -90,12 +89,12 @@ func (j JWTAuth) VerifyToken(tokenString string, tokenType string) (*Claims, err
 		return claims, nil
 	} else if ve, ok := err.(*jwt.ValidationError); ok {
 		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-			return nil, errors.New("token malformed")
+			return nil, jwt.ErrTokenMalformed
 		}
 		if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-			return nil, errors.New("token expired")
+			return nil, jwt.ErrTokenExpired
 		}
 	}
 
-	return nil, errors.New("couldn't handle token")
+	return nil, err
 }

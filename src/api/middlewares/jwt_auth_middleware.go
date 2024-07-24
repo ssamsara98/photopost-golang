@@ -52,7 +52,7 @@ func (m JWTAuthMiddleware) Handle(tokenType string, needUser bool) gin.HandlerFu
 		tokenString := strings.Replace(authorizationHeader, constants.TokenPrefix+" ", "", -1)
 		claims, err := m.JWTAuth.VerifyToken(tokenString, tokenType)
 		if err != nil {
-			m.logger.Error("claims error")
+			m.logger.Error("claims error => ", err.Error())
 			if errors.Is(err, jwt.ErrTokenExpired) {
 				utils.ErrorJSON(c, http.StatusForbidden, err)
 			} else {
