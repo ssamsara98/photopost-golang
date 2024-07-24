@@ -3,12 +3,11 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/ssamsara98/photopost-golang/src/api/dto"
 	"github.com/ssamsara98/photopost-golang/src/api/services"
 	"github.com/ssamsara98/photopost-golang/src/lib"
 	"github.com/ssamsara98/photopost-golang/src/utils"
-
-	"github.com/gin-gonic/gin"
 )
 
 type UsersController struct {
@@ -50,9 +49,8 @@ func (u UsersController) GetUserListCursor(c *gin.Context) {
 }
 
 func (u UsersController) GetUserByID(c *gin.Context) {
-	uri, err := utils.BindUri[dto.GetUserByIDParams](c)
-	if err != nil {
-		utils.ErrorJSON(c, http.StatusBadRequest, err)
+	uri := utils.BindUri[dto.GetUserByIDParams](c)
+	if uri == nil {
 		return
 	}
 

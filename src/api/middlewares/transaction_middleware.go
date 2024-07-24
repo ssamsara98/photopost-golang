@@ -3,12 +3,11 @@ package middlewares
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/ssamsara98/photopost-golang/src/constants"
 	"github.com/ssamsara98/photopost-golang/src/infrastructure"
 	"github.com/ssamsara98/photopost-golang/src/lib"
 	"github.com/ssamsara98/photopost-golang/src/utils"
-
-	"github.com/gin-gonic/gin"
 )
 
 // DBTransactionMiddleware -> struct for transaction

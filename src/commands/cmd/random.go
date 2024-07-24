@@ -4,9 +4,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/ssamsara98/photopost-golang/src/lib"
-
 	"github.com/spf13/cobra"
+	"github.com/ssamsara98/photopost-golang/src/lib"
 )
 
 type RandomCommand struct {

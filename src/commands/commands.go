@@ -3,10 +3,9 @@ package commands
 import (
 	"context"
 
+	"github.com/spf13/cobra"
 	"github.com/ssamsara98/photopost-golang/src/commands/cmd"
 	"github.com/ssamsara98/photopost-golang/src/lib"
-
-	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 )
 

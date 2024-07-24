@@ -8,7 +8,6 @@ import (
 	"github.com/ssamsara98/photopost-golang/src/helpers"
 	"github.com/ssamsara98/photopost-golang/src/infrastructure"
 	"github.com/ssamsara98/photopost-golang/src/lib"
-
 	"go.uber.org/fx"
 )
 

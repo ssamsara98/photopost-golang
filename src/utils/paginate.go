@@ -3,9 +3,8 @@ package utils
 import (
 	"math"
 
-	"github.com/ssamsara98/photopost-golang/src/constants"
-
 	"github.com/gin-gonic/gin"
+	"github.com/ssamsara98/photopost-golang/src/constants"
 	"gorm.io/gorm"
 )
 

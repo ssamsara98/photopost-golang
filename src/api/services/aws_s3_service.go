@@ -7,8 +7,6 @@ import (
 	"mime/multipart"
 	"path"
 
-	"github.com/ssamsara98/photopost-golang/src/lib"
-
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
@@ -17,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/google/uuid"
 	gonanoid "github.com/matoous/go-nanoid/v2"
+	"github.com/ssamsara98/photopost-golang/src/lib"
 )
 
 type S3Service struct {

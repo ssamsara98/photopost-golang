@@ -3,11 +3,10 @@ package infrastructure
 import (
 	"net/http"
 
-	"github.com/ssamsara98/photopost-golang/src/lib"
-	"github.com/ssamsara98/photopost-golang/src/utils"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/ssamsara98/photopost-golang/src/lib"
+	"github.com/ssamsara98/photopost-golang/src/utils"
 )
 
 // Router -> Gin Router

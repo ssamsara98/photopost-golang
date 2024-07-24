@@ -5,7 +5,6 @@ import (
 	"github.com/ssamsara98/photopost-golang/src/infrastructure"
 	"github.com/ssamsara98/photopost-golang/src/lib"
 	"github.com/ssamsara98/photopost-golang/src/models"
-
 	"gorm.io/gorm"
 )
 

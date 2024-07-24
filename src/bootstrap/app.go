@@ -1,9 +1,8 @@
 package bootstrap
 
 import (
-	"github.com/ssamsara98/photopost-golang/src/commands"
-
 	"github.com/spf13/cobra"
+	"github.com/ssamsara98/photopost-golang/src/commands"
 )
 
 var rootCmd = &cobra.Command{

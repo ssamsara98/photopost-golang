@@ -1,9 +1,8 @@
 package infrastructure
 
 import (
-	"github.com/ssamsara98/photopost-golang/src/lib"
-
 	migrate "github.com/rubenv/sql-migrate"
+	"github.com/ssamsara98/photopost-golang/src/lib"
 )
 
 // Migrations -> Migration Struct

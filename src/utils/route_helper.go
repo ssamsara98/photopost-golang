@@ -1,27 +1,28 @@
 package utils
 
 import (
-	"github.com/ssamsara98/photopost-golang/src/constants"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ssamsara98/photopost-golang/src/constants"
 )
 
-func BindBody[T any](c *gin.Context) (*T, error) {
+func BindBody[T any](c *gin.Context) *T {
 	var body T
-	err := c.Bind(&body)
-	if err != nil {
-		return nil, err
+	if err := c.ShouldBind(&body); err != nil {
+		ErrorJSON(c, http.StatusBadRequest, err)
+		return nil
 	}
-	return &body, nil
+	return &body
 }
 
-func BindUri[T any](c *gin.Context) (*T, error) {
+func BindUri[T any](c *gin.Context) *T {
 	var uri T
-	err := c.ShouldBindUri(&uri)
-	if err != nil {
-		return nil, err
+	if err := c.ShouldBindUri(&uri); err != nil {
+		ErrorJSON(c, http.StatusBadRequest, err)
+		return nil
 	}
-	return &uri, nil
+	return &uri
 }
 
 func GetUser[T any](c *gin.Context) (*T, bool) {

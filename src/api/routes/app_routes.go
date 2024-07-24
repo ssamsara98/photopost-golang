@@ -1,11 +1,10 @@
 package routes
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/ssamsara98/photopost-golang/src/api/controllers"
 	"github.com/ssamsara98/photopost-golang/src/api/middlewares"
 	"github.com/ssamsara98/photopost-golang/src/constants"
-
-	"github.com/gin-gonic/gin"
 )
 
 type AppRoutes struct {

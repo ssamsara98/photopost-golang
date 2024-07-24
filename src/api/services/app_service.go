@@ -10,7 +10,6 @@ import (
 	"github.com/ssamsara98/photopost-golang/src/lib"
 	"github.com/ssamsara98/photopost-golang/src/models"
 	"github.com/ssamsara98/photopost-golang/src/utils"
-
 	"gorm.io/gorm"
 )
 

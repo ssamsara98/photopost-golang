@@ -6,12 +6,11 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/spf13/cobra"
 	"github.com/ssamsara98/photopost-golang/src/api/middlewares"
 	"github.com/ssamsara98/photopost-golang/src/api/routes"
 	"github.com/ssamsara98/photopost-golang/src/infrastructure"
 	"github.com/ssamsara98/photopost-golang/src/lib"
-
-	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 )
 

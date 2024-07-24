@@ -4,14 +4,13 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/ssamsara98/photopost-golang/src/api/dto"
 	"github.com/ssamsara98/photopost-golang/src/api/services"
 	"github.com/ssamsara98/photopost-golang/src/constants"
 	"github.com/ssamsara98/photopost-golang/src/lib"
 	"github.com/ssamsara98/photopost-golang/src/models"
 	"github.com/ssamsara98/photopost-golang/src/utils"
-
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -34,9 +33,8 @@ func NewPostsController(
 }
 
 func (p PostsController) UploadPhoto(c *gin.Context) {
-	body, err := utils.BindBody[dto.UploadPhotoDto](c)
-	if err != nil {
-		utils.ErrorJSON(c, http.StatusBadRequest, err)
+	body := utils.BindBody[dto.UploadPhotoDto](c)
+	if body == nil {
 		return
 	}
 
@@ -58,9 +56,8 @@ func (p PostsController) UploadPhoto(c *gin.Context) {
 }
 
 func (p PostsController) CreatePost(c *gin.Context) {
-	body, err := utils.BindBody[dto.CreatePostDto](c)
-	if err != nil {
-		utils.ErrorJSON(c, http.StatusBadRequest, err)
+	body := utils.BindBody[dto.CreatePostDto](c)
+	if body == nil {
 		return
 	}
 
@@ -84,9 +81,8 @@ func (p PostsController) GetPostList(c *gin.Context) {
 }
 
 func (p PostsController) GetPostById(c *gin.Context) {
-	uri, err := utils.BindUri[dto.GetPostByIDParams](c)
-	if err != nil {
-		utils.ErrorJSON(c, http.StatusBadRequest, err)
+	uri := utils.BindUri[dto.GetPostByIDParams](c)
+	if uri == nil {
 		return
 	}
 
@@ -114,9 +110,9 @@ func (p PostsController) GetMyPostList(c *gin.Context) {
 }
 
 func (p PostsController) GetUserPostList(c *gin.Context) {
-	uri, err := utils.BindUri[dto.GetPostByUserIDParams](c)
-	if err != nil {
-		utils.ErrorJSON(c, http.StatusBadRequest, err)
+	uri := utils.BindUri[dto.GetPostByUserIDParams](c)
+	if uri == nil {
+		return
 	}
 
 	limit, page := utils.GetPaginationQuery(c)
@@ -132,9 +128,8 @@ func (p PostsController) GetUserPostList(c *gin.Context) {
 func (p PostsController) DeletePost(c *gin.Context) {
 	user, _ := utils.GetUser[models.User](c)
 
-	uri, err := utils.BindUri[dto.GetPostByIDParams](c)
-	if err != nil {
-		utils.ErrorJSON(c, http.StatusBadRequest, err)
+	uri := utils.BindUri[dto.GetPostByIDParams](c)
+	if uri == nil {
 		return
 	}
 

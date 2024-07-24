@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/ssamsara98/photopost-golang/src/lib"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"

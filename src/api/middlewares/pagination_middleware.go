@@ -3,10 +3,9 @@ package middlewares
 import (
 	"strconv"
 
+	"github.com/gin-gonic/gin"
 	"github.com/ssamsara98/photopost-golang/src/constants"
 	"github.com/ssamsara98/photopost-golang/src/lib"
-
-	"github.com/gin-gonic/gin"
 )
 
 type PaginationMiddleware struct {

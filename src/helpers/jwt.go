@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/ssamsara98/photopost-golang/src/constants"
 	"github.com/ssamsara98/photopost-golang/src/lib"
 	"github.com/ssamsara98/photopost-golang/src/models"
-
-	"github.com/golang-jwt/jwt/v4"
 )
 
 // JWTAuth service relating to authorization
