@@ -1,4 +1,4 @@
-FROM golang:1.20-alpine
+FROM golang:1.21-alpine
 
 # Required because go requires gcc to build
 RUN apk add build-base git inotify-tools
