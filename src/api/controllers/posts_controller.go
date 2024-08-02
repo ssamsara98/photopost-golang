@@ -1,10 +1,7 @@
 package controllers
 
 import (
-	"errors"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 	"github.com/ssamsara98/photopost-golang/src/api/dto"
 	"github.com/ssamsara98/photopost-golang/src/api/services"
 	"github.com/ssamsara98/photopost-golang/src/constants"
@@ -32,117 +29,111 @@ func NewPostsController(
 	}
 }
 
-func (p PostsController) UploadPhoto(c *gin.Context) {
-	body := utils.BindBody[dto.UploadPhotoDto](c)
-	if body == nil {
-		return
+func (p PostsController) UploadPhoto(c *fiber.Ctx) error {
+	body, err := utils.BindBody[dto.UploadPhotoDto](c)
+	if err != nil {
+		return err
 	}
 
 	s3, err := p.s3Service.UploadPhoto(&body.Image)
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusBadRequest, err)
-		return
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	keypath := (*s3.Key)[4:]
 	photo := p.postsService.UploadPhoto(&keypath)
 
-	utils.SuccessJSON(c, http.StatusOK, gin.H{
+	return utils.SuccessJSON(c, fiber.Map{
 		"s3":    s3,
 		"photo": photo,
 	})
 
-	// utils.SuccessJSON(c, http.StatusOK, gin.H{})
+	// return utils.SuccessJSON(c, fiber.Map{})
 }
 
-func (p PostsController) CreatePost(c *gin.Context) {
-	body := utils.BindBody[dto.CreatePostDto](c)
-	if body == nil {
-		return
+func (p PostsController) CreatePost(c *fiber.Ctx) error {
+	body, err := utils.BindBody[dto.CreatePostDto](c)
+	if err != nil {
+		return err
 	}
 
-	user, _ := c.MustGet(constants.User).(*models.User)
-	trxHandle, _ := c.MustGet(constants.DBTransaction).(*gorm.DB)
+	user, _ := utils.GetUser[models.User](c)
+	trxHandle, _ := c.Locals(constants.DBTransaction).(*gorm.DB)
 
 	result := p.postsService.WithTrx(trxHandle).CreatePost(user, body)
-	utils.SuccessJSON(c, http.StatusOK, result)
+	return utils.SuccessJSON(c, result)
 }
 
-func (p PostsController) GetPostList(c *gin.Context) {
+func (p PostsController) GetPostList(c *fiber.Ctx) error {
 	limit, cursor := utils.GetPaginationCursorQuery(c)
 	items, err := p.postsService.SetPaginationScope(utils.PaginateCursor(limit)).GetPostList(cursor)
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusInternalServerError, err)
-		return
+		return err
 	}
 
 	resp := utils.CreatePaginationCursor(items, limit, cursor)
-	utils.SuccessJSON(c, http.StatusOK, resp)
+	return utils.SuccessJSON(c, resp)
 }
 
-func (p PostsController) GetPostById(c *gin.Context) {
-	uri := utils.BindUri[dto.GetPostByIDParams](c)
-	if uri == nil {
-		return
-	}
-
-	resp, err := p.postsService.GetPostById(uri)
+func (p PostsController) GetPostById(c *fiber.Ctx) error {
+	params, err := utils.BindParams[dto.GetPostByIDParams](c)
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusBadRequest, err)
-		return
+		return err
 	}
 
-	utils.SuccessJSON(c, http.StatusOK, resp)
+	resp, err := p.postsService.GetPostById(params)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return utils.SuccessJSON(c, resp)
 }
 
-func (p PostsController) GetMyPostList(c *gin.Context) {
+func (p PostsController) GetMyPostList(c *fiber.Ctx) error {
 	user, _ := utils.GetUser[models.User](c)
 
 	limit, page := utils.GetPaginationQuery(c)
 	items, count, err := p.postsService.SetPaginationScope(utils.Paginate(limit, page)).GetMyPostList(user)
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusInternalServerError, err)
-		return
+		return err
 	}
 
 	resp := utils.CreatePagination(&items, count, limit, page)
-	utils.SuccessJSON(c, http.StatusOK, resp)
+	return utils.SuccessJSON(c, resp)
 }
 
-func (p PostsController) GetUserPostList(c *gin.Context) {
-	uri := utils.BindUri[dto.GetPostByUserIDParams](c)
-	if uri == nil {
-		return
+func (p PostsController) GetUserPostList(c *fiber.Ctx) error {
+	params, err := utils.BindParams[dto.GetPostByUserIDParams](c)
+	if err != nil {
+		return err
 	}
 
 	limit, page := utils.GetPaginationQuery(c)
-	items, count, err := p.postsService.SetPaginationScope(utils.Paginate(limit, page)).GetUserPostList(uri)
+	items, count, err := p.postsService.SetPaginationScope(utils.Paginate(limit, page)).GetUserPostList(params)
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusBadRequest, err)
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	resp := utils.CreatePagination(&items, count, limit, page)
-	utils.SuccessJSON(c, http.StatusOK, resp)
+	return utils.SuccessJSON(c, resp)
 }
 
-func (p PostsController) DeletePost(c *gin.Context) {
+func (p PostsController) DeletePost(c *fiber.Ctx) error {
 	user, _ := utils.GetUser[models.User](c)
 
-	uri := utils.BindUri[dto.GetPostByIDParams](c)
-	if uri == nil {
-		return
-	}
-
-	post, err := p.postsService.GetPostById(uri)
+	params, err := utils.BindParams[dto.GetPostByIDParams](c)
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusNotFound, err)
-		return
-	}
-	if post.AuthorID != &user.ID {
-		utils.ErrorJSON(c, http.StatusForbidden, errors.New("author_id != user.id"))
-		return
+		return err
 	}
 
-	p.postsService.DeletePost(&post, user, uri)
-	utils.SuccessJSON(c, http.StatusNoContent, gin.H{})
+	post, err := p.postsService.GetPostById(params)
+	if err != nil {
+		return fiber.NewError(fiber.StatusNotFound, err.Error())
+	}
+	if *post.AuthorID != user.ID {
+		return fiber.NewError(fiber.StatusForbidden, "author_id != user.id")
+	}
+
+	p.postsService.DeletePost(&post, user, params)
+	return utils.SuccessJSON(c, fiber.Map{})
 }

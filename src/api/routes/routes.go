@@ -1,13 +1,7 @@
 package routes
 
 import (
-	"errors"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-	"github.com/ssamsara98/photopost-golang/src/api/middlewares"
 	"github.com/ssamsara98/photopost-golang/src/infrastructure"
-	"github.com/ssamsara98/photopost-golang/src/utils"
 	"go.uber.org/fx"
 )
 
@@ -26,24 +20,24 @@ type IRoute interface {
 
 // Routes contains multiple routes
 type Routes struct {
-	handler             *infrastructure.Router
-	rateLimitMiddleware *middlewares.RateLimitMiddleware
-	appRoutes           *AppRoutes
-	usersRoutes         *UsersRoutes
-	postsRoutes         *PostsRoutes
+	handler *infrastructure.Router
+	// rateLimitMiddleware *middlewares.RateLimitMiddleware
+	appRoutes   *AppRoutes
+	usersRoutes *UsersRoutes
+	postsRoutes *PostsRoutes
 }
 
 // NewRoutes sets up routes
 func NewRoutes(
 	handler *infrastructure.Router,
-	rateLimitMiddleware *middlewares.RateLimitMiddleware,
+	// rateLimitMiddleware *middlewares.RateLimitMiddleware,
 	appRoutes *AppRoutes,
 	usersRoutes *UsersRoutes,
 	postsRoutes *PostsRoutes,
 ) *Routes {
 	return &Routes{
 		handler,
-		rateLimitMiddleware,
+		// rateLimitMiddleware,
 		appRoutes,
 		usersRoutes,
 		postsRoutes,
@@ -55,7 +49,7 @@ func (r Routes) Setup() {
 	// for _, route := range r {
 	// 	route.Setup()
 	// }
-	r.handler.Use(r.rateLimitMiddleware.Handle())
+	// r.handler.Use(r.rateLimitMiddleware.Handle())
 
 	root := r.handler.Group("")
 	apiV1 := r.handler.Group("v1")
@@ -65,7 +59,7 @@ func (r Routes) Setup() {
 	r.postsRoutes.Run(apiV1)
 
 	// Not Found route
-	r.handler.NoRoute(func(c *gin.Context) {
-		utils.ErrorJSON(c, http.StatusNotFound, errors.New("not found"))
-	})
+	// r.handler.NoRoute(func(c *gin.Context) {
+	// 	utils.ErrorJSON(c, http.StatusNotFound, errors.New("not found"))
+	// })
 }

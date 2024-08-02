@@ -5,7 +5,7 @@ import "go.uber.org/fx"
 // Module Middleware exported
 var Module = fx.Options(
 	fx.Provide(NewMiddlewares),
-	fx.Provide(NewRateLimitMiddleware),
+	// fx.Provide(NewRateLimitMiddleware),
 	fx.Provide(NewPaginationMiddleware),
 	fx.Provide(NewJWTAuthMiddleware),
 	fx.Provide(NewDBTransactionMiddleware),

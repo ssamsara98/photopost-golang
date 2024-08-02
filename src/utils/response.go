@@ -1,26 +1,34 @@
 package utils
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-// ErrorJSON : json error response function
-func ErrorJSON(c *gin.Context, statusCode int, err error) {
-	resp := gin.H{
+func ErrorJSON(c *fiber.Ctx, err error, opts ...any) error {
+	statusCode := fiber.StatusInternalServerError
+	if len(opts) > 0 {
+		statusCode, _ = opts[0].(int)
+	}
+	resp := fiber.Map{
 		"status":     "error",
 		"statusCode": statusCode,
 		"message":    err.Error(),
 		"error":      err,
 	}
-	c.JSON(statusCode, resp)
+	c.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSONCharsetUTF8)
+	return c.Status(statusCode).JSON(resp)
 }
 
-// SuccessJSON : json error response function
-func SuccessJSON(c *gin.Context, statusCode int, data any) {
-	resp := gin.H{
+func SuccessJSON(c *fiber.Ctx, data any, opts ...any) error {
+	statusCode := fiber.StatusOK
+	if len(opts) > 0 {
+		statusCode, _ = opts[0].(int)
+	}
+	resp := fiber.Map{
 		"status":     "success",
 		"statusCode": statusCode,
 		"result":     data,
 	}
-	c.JSON(statusCode, resp)
+	c.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSONCharsetUTF8)
+	return c.Status(statusCode).JSON(resp)
 }

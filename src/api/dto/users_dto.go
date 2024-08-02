@@ -1,5 +1,5 @@
 package dto
 
 type GetUserByIDParams struct {
-	ID string `uri:"userId" binding:"required"`
+	UserID string `uri:"userId" json:"userId" validate:"required"`
 }

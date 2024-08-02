@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 	"github.com/ssamsara98/photopost-golang/src/api/controllers"
 	"github.com/ssamsara98/photopost-golang/src/api/middlewares"
 	"github.com/ssamsara98/photopost-golang/src/constants"
@@ -32,16 +32,16 @@ func NewPostsRoutes(
 	}
 }
 
-func (p PostsRoutes) Run(handler *gin.RouterGroup) {
+func (p PostsRoutes) Run(handler fiber.Router) {
 	router := handler.Group("posts")
 
-	router.GET("", p.paginationMiddleware.HandleCursor(), p.postsController.GetPostList)
-	router.GET("p/:postId", p.postsController.GetPostById)
-	router.GET("u/:userId", p.paginationMiddleware.Handle(), p.postsController.GetUserPostList)
+	router.Get("", p.paginationMiddleware.HandleCursor(), p.postsController.GetPostList)
+	router.Get("p/:postId", p.postsController.GetPostById)
+	router.Get("u/:userId", p.paginationMiddleware.Handle(), p.postsController.GetUserPostList)
 
 	router.Use(p.jwtAuthMiddleware.Handle(constants.TokenAccess, true))
-	router.POST("", p.dbTransactionMiddleware.Handle(), p.postsController.CreatePost)
-	router.POST("upload", p.postsController.UploadPhoto)
-	router.GET("mine", p.paginationMiddleware.Handle(), p.postsController.GetMyPostList)
-	router.DELETE("p/:postId", p.postsController.DeletePost)
+	router.Post("", p.dbTransactionMiddleware.Handle(), p.postsController.CreatePost)
+	router.Post("upload", p.postsController.UploadPhoto)
+	router.Get("mine", p.paginationMiddleware.Handle(), p.postsController.GetMyPostList)
+	router.Delete("p/:postId", p.postsController.DeletePost)
 }

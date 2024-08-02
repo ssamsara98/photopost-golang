@@ -110,12 +110,12 @@ func (l Logger) GetFxLogger() fxevent.Logger {
 	return result
 }
 
-// GetGinLogger gets logger for gin framework debugging
-func (l Logger) GetGinLogger() io.Writer {
+// GetFiberLogger gets logger for gin framework debugging
+func (l Logger) GetFiberLogger() io.Writer {
 	logger := zapLogger.WithOptions(
 		zap.WithCaller(false),
 	)
-	result := &GinLogger{
+	result := &FiberLogger{
 		Logger: newSugaredLogger(logger),
 	}
 	return result

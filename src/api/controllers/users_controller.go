@@ -1,9 +1,7 @@
 package controllers
 
 import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 	"github.com/ssamsara98/photopost-golang/src/api/dto"
 	"github.com/ssamsara98/photopost-golang/src/api/services"
 	"github.com/ssamsara98/photopost-golang/src/lib"
@@ -25,40 +23,37 @@ func NewUsersController(
 	}
 }
 
-func (u UsersController) GetUserList(c *gin.Context) {
+func (u UsersController) GetUserList(c *fiber.Ctx) error {
 	limit, page := utils.GetPaginationQuery(c)
 	items, count, err := u.usersService.SetPaginationScope(utils.Paginate(limit, page)).GetUserList()
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusInternalServerError, err)
-		return
+		return err
 	}
 
 	resp := utils.CreatePagination(items, count, limit, page)
-	utils.SuccessJSON(c, http.StatusOK, resp)
+	return utils.SuccessJSON(c, resp)
 }
-func (u UsersController) GetUserListCursor(c *gin.Context) {
+func (u UsersController) GetUserListCursor(c *fiber.Ctx) error {
 	limit, cursor := utils.GetPaginationCursorQuery(c)
 	items, err := u.usersService.SetPaginationScope(utils.PaginateCursor(limit)).GetUserListCursor(cursor)
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusInternalServerError, err)
-		return
+		return err
 	}
 
 	resp := utils.CreatePaginationCursor(items, limit, cursor)
-	utils.SuccessJSON(c, http.StatusOK, resp)
+	return utils.SuccessJSON(c, resp)
 }
 
-func (u UsersController) GetUserByID(c *gin.Context) {
-	uri := utils.BindUri[dto.GetUserByIDParams](c)
-	if uri == nil {
-		return
-	}
-
-	user, err := u.usersService.GetUserByID(uri)
+func (u UsersController) GetUserByID(c *fiber.Ctx) error {
+	params, err := utils.BindParams[dto.GetUserByIDParams](c)
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusNotFound, err)
-		return
+		return err
 	}
 
-	utils.SuccessJSON(c, http.StatusOK, user)
+	user, err := u.usersService.GetUserByID(params)
+	if err != nil {
+		return fiber.NewError(fiber.StatusNotFound, err.Error())
+	}
+
+	return utils.SuccessJSON(c, user)
 }

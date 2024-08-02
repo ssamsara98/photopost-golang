@@ -53,11 +53,11 @@ func (p PostsService) CreatePost(user *models.User, body *dto.CreatePostDto) *mo
 	p.db.Create(newPost)
 
 	postPhotoJoins := make([]*models.PostToPhoto, 0)
-	for i := 0; i < len(body.PhotoIds); i++ {
+	for i := 0; i < len(body.PhotoIDs); i++ {
 		newPostPhoto := &models.PostToPhoto{
 			Position: uint(i),
 			PostID:   newPost.ID,
-			PhotoID:  body.PhotoIds[i],
+			PhotoID:  body.PhotoIDs[i],
 		}
 		postPhotoJoins = append(postPhotoJoins, newPostPhoto)
 	}
@@ -87,10 +87,10 @@ func (p PostsService) GetPostList(cursor *int64) (*[]models.Post, error) {
 	return &items, nil
 }
 
-func (p PostsService) GetPostById(uri *dto.GetPostByIDParams) (post models.Post, err error) {
+func (p PostsService) GetPostById(params *dto.GetPostByIDParams) (post models.Post, err error) {
 	return post, p.db.Preload("Author").Preload("Photos", func(db *gorm.DB) *gorm.DB {
 		return p.db.Order("post_to_photos.position ASC").Preload("Photo")
-	}).Order("created_at DESC").First(&post, uri.ID).Error
+	}).Order("created_at DESC").First(&post, params.PostID).Error
 }
 
 func (p PostsService) GetMyPostList(user *models.User) (items []models.Post, count *int64, err error) {
@@ -107,12 +107,12 @@ func (p PostsService) GetMyPostList(user *models.User) (items []models.Post, cou
 	return items, count, nil
 }
 
-func (p PostsService) GetUserPostList(uri *dto.GetPostByUserIDParams) (items []models.Post, count *int64, err error) {
+func (p PostsService) GetUserPostList(params *dto.GetPostByUserIDParams) (items []models.Post, count *int64, err error) {
 	var c int64
 
 	err = p.db.WithTrx(p.paginationScope).Preload("Photos", func(db *gorm.DB) *gorm.DB {
 		return p.db.Order("post_to_photos.position ASC").Preload("Photo")
-	}).Order("created_at DESC").Where("author_id = ?", uri.ID).Where("is_published = ?", true).Find(&items).Offset(-1).Limit(-1).Count(&c).Error
+	}).Order("created_at DESC").Where("author_id = ?", params.UserID).Where("is_published = ?", true).Find(&items).Offset(-1).Limit(-1).Count(&c).Error
 	if err != nil {
 		return nil, nil, err
 	}
@@ -121,9 +121,9 @@ func (p PostsService) GetUserPostList(uri *dto.GetPostByUserIDParams) (items []m
 	return items, count, nil
 }
 
-// func (p PostsService) UpdatePost(user *models.User, uri *dto.GetPostByIDParams, body *dto.UpdatePostDto) {
+// func (p PostsService) UpdatePost(user *models.User, params *dto.GetPostByIDParams, body *dto.UpdatePostDto) {
 // 	var post models.Post
-// 	p.db.Where("id = ?", uri.ID).Where("author_id = ?", user.ID).First(&post)
+// 	p.db.Where("id = ?", params.PostID).Where("author_id = ?", user.ID).First(&post)
 
 // 	// if body.Title != nil {
 // 	// 	post.Title = *body.Title
@@ -135,7 +135,7 @@ func (p PostsService) GetUserPostList(uri *dto.GetPostByUserIDParams) (items []m
 // 	p.db.Save(&post)
 // }
 
-func (p PostsService) PublishPost(post *models.Post, uri *dto.GetPostByIDParams, body *dto.PublishPostDto) {
+func (p PostsService) PublishPost(post *models.Post, params *dto.GetPostByIDParams, body *dto.PublishPostDto) {
 	if body.IsPublished != nil {
 		post.IsPublished = *body.IsPublished
 	}
@@ -143,6 +143,6 @@ func (p PostsService) PublishPost(post *models.Post, uri *dto.GetPostByIDParams,
 	p.db.Save(&post)
 }
 
-func (p PostsService) DeletePost(post *models.Post, user *models.User, uri *dto.GetPostByIDParams) {
-	p.db.Where("id = ?", uri.ID).Delete(&post)
+func (p PostsService) DeletePost(post *models.Post, user *models.User, params *dto.GetPostByIDParams) {
+	p.db.Where("id = ?", params.PostID).Delete(&post)
 }

@@ -1,17 +1,29 @@
 package infrastructure
 
 import (
-	"net/http"
+	"errors"
+	"fmt"
+	"time"
 
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/compress"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/etag"
+	"github.com/gofiber/fiber/v2/middleware/healthcheck"
+	"github.com/gofiber/fiber/v2/middleware/helmet"
+	"github.com/gofiber/fiber/v2/middleware/idempotency"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
+	lm "github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/ssamsara98/photopost-golang/src/lib"
 	"github.com/ssamsara98/photopost-golang/src/utils"
 )
 
-// Router -> Gin Router
+const idleTimeout = 5 * time.Second
+
+// Router -> Fiber Router
 type Router struct {
-	*gin.Engine
+	*fiber.App
 }
 
 // NewRouter : all the routes are defined here
@@ -20,47 +32,42 @@ func NewRouter(
 	logger *lib.Logger,
 ) *Router {
 
-	// if (env.Environment != "local" && env.Environment != "development") && env.SentryDSN != "" {
-	// 	if err := sentry.Init(sentry.ClientOptions{
-	// 		Dsn:         env.SentryDSN,
-	// 		Environment: `clean-backend-` + env.Environment,
-	// 	}); err != nil {
-	// 		logger.Infof("Sentry initialization failed: %v\n", err)
-	// 	}
-	// }
-
-	gin.DefaultWriter = logger.GetGinLogger()
-	appEnv := env.Environment
-	if appEnv == production {
-		gin.SetMode(gin.ReleaseMode)
-	} else {
-		gin.SetMode(gin.DebugMode)
-	}
-
-	httpRouter := gin.Default()
-
-	httpRouter.MaxMultipartMemory = env.MaxMultipartMemory
-
-	httpRouter.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "OPTIONS", "DELETE"},
-		AllowHeaders:     []string{"*"},
-		AllowCredentials: true,
-	}))
-	httpRouter.Use(gin.Recovery())
-	// httpRouter.Use(gin.Logger())
-
-	// // Attach sentry middleware
-	// httpRouter.Use(sentrygin.New(sentrygin.Options{
-	// 	Repanic: true,
-	// }))
-
-	httpRouter.GET("/health-check", func(c *gin.Context) {
-		utils.SuccessJSON(c, http.StatusOK, "clean architecture 📺 API Up and Running")
+	app := fiber.New(fiber.Config{
+		IdleTimeout:  idleTimeout,
+		ErrorHandler: fiberErrorHandler,
 	})
 
-	router := &Router{
-		httpRouter,
-	}
+	/* MaxMultipartMemory */
+
+	app.Use(idempotency.New())
+	app.Use(recover.New())
+	app.Use(compress.New())
+	app.Use(cors.New())
+	app.Use(helmet.New())
+	app.Use(limiter.New(limiter.Config{
+		Max:        100,
+		Expiration: 10 * time.Second,
+	}))
+	app.Use(lm.New(lm.Config{
+		Output: logger.GetFiberLogger(),
+		Format: fmt.Sprintf(
+			"pid:${%s} | ${%s} | ${%s} | ${%s} | ${%s} | ${%s} | ${%s}",
+			lm.TagPid, lm.TagStatus, lm.TagLatency, lm.TagIP, lm.TagMethod, lm.TagPath, lm.TagError,
+		),
+		DisableColors: true,
+	}))
+	app.Use(etag.New())
+	app.Use(healthcheck.New())
+
+	router := &Router{app}
 	return router
+}
+
+func fiberErrorHandler(c *fiber.Ctx, err error) error {
+	code := fiber.StatusInternalServerError
+	var e *fiber.Error
+	if errors.As(err, &e) {
+		code = e.Code
+	}
+	return utils.ErrorJSON(c, err, code)
 }

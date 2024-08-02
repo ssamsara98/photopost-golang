@@ -1,31 +1,27 @@
 package utils
 
 import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 	"github.com/ssamsara98/photopost-golang/src/constants"
 )
 
-func BindBody[T any](c *gin.Context) *T {
-	var body T
-	if err := c.ShouldBind(&body); err != nil {
-		ErrorJSON(c, http.StatusBadRequest, err)
-		return nil
+func BindBody[T any](c *fiber.Ctx) (*T, error) {
+	body := new(T)
+	if err := c.BodyParser(body); err != nil {
+		return nil, fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
-	return &body
+	return body, nil
 }
 
-func BindUri[T any](c *gin.Context) *T {
-	var uri T
-	if err := c.ShouldBindUri(&uri); err != nil {
-		ErrorJSON(c, http.StatusBadRequest, err)
-		return nil
+func BindParams[T any](c *fiber.Ctx) (*T, error) {
+	params := new(T)
+	if err := c.ParamsParser(params); err != nil {
+		return nil, fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
-	return &uri
+	return params, nil
 }
 
-func GetUser[T any](c *gin.Context) (*T, bool) {
-	user, boolean := c.MustGet(constants.User).(*T)
+func GetUser[T any](c *fiber.Ctx) (*T, bool) {
+	user, boolean := c.Locals(constants.User).(*T)
 	return user, boolean
 }

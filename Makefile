@@ -1,8 +1,9 @@
 include .env
 export
 
-COMPOSE_EXEC=docker compose -f ./docker/compose.yml exec -it
-MIGRATE=$(COMPOSE_EXEC) exec web sql-migrate
+COMPOSE=docker compose -f ./docker/compose.yml
+COMPOSE_EXEC=$(COMPOSE) exec -it
+MIGRATE=$(COMPOSE) exec web sql-migrate
 
 ifeq ($(p),host)
 	MIGRATE=sql-migrate
@@ -50,10 +51,10 @@ lint-setup:
 
 # docker compose
 dc:
-	$(COMPOSE_EXEC) $(ARGS)
+	$(COMPOSE) $(ARGS)
 
 dc-up:
-	$(COMPOSE_EXEC) up -d $(ARGS)
+	$(COMPOSE) up -d $(ARGS)
 
 dc-down:
-	$(COMPOSE_EXEC) down $(ARGS)
+	$(COMPOSE) down $(ARGS)

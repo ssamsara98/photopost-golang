@@ -5,6 +5,7 @@ import (
 	"github.com/ssamsara98/photopost-golang/src/infrastructure"
 	"github.com/ssamsara98/photopost-golang/src/lib"
 	"github.com/ssamsara98/photopost-golang/src/models"
+	"github.com/ssamsara98/photopost-golang/src/utils"
 	"gorm.io/gorm"
 )
 
@@ -58,6 +59,10 @@ func (u UsersService) GetUserListCursor(cursor *int64) (*[]models.User, error) {
 	return &items, nil
 }
 
-func (u UsersService) GetUserByID(uri *dto.GetUserByIDParams) (user models.User, err error) {
-	return user, u.db.First(&user, "id = ?", uri.ID).Error
+func (u UsersService) GetUserByID(uri *dto.GetUserByIDParams) (user *models.User, err error) {
+	id, err := utils.ConvertStringToInt(uri.UserID)
+	if err != nil {
+		return nil, err
+	}
+	return user, u.db.First(&user, "id = ?", id).Error
 }

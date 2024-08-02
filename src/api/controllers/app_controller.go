@@ -1,9 +1,7 @@
 package controllers
 
 import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 	"github.com/ssamsara98/photopost-golang/src/api/dto"
 	"github.com/ssamsara98/photopost-golang/src/api/services"
 	"github.com/ssamsara98/photopost-golang/src/constants"
@@ -29,79 +27,74 @@ func NewAppController(
 	}
 }
 
-func (app AppController) Home(c *gin.Context) {
+func (app AppController) Home(c *fiber.Ctx) error {
 	message := app.appService.Home()
-	utils.SuccessJSON(c, http.StatusOK, message)
+	return utils.SuccessJSON(c, message)
 }
 
-func (app AppController) Register(c *gin.Context) {
-	body := utils.BindBody[dto.RegisterUserDto](c)
-	if body == nil {
-		return
+func (app AppController) Register(c *fiber.Ctx) error {
+	body, err := utils.BindBody[dto.RegisterUserDto](c)
+	if err != nil {
+		return err
 	}
 
 	if err := app.appService.FindEmailUsername(body); err != nil {
-		utils.ErrorJSON(c, http.StatusConflict, err)
-		return
+		return fiber.NewError(fiber.StatusConflict, err.Error())
 	}
 
-	trxHandle, _ := c.MustGet(constants.DBTransaction).(*gorm.DB)
+	trxHandle, _ := c.Locals(constants.DBTransaction).(*gorm.DB)
 
 	result, err := app.appService.WithTrx(trxHandle).Register(body)
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusInternalServerError, err)
-		return
+		return err
 	}
 
-	utils.SuccessJSON(c, http.StatusCreated, result)
+	return utils.SuccessJSON(c, result)
 }
 
-func (app AppController) Login(c *gin.Context) {
-	body := utils.BindBody[dto.LoginUserDto](c)
-	if body == nil {
-		return
+func (app AppController) Login(c *fiber.Ctx) error {
+	body, err := utils.BindBody[dto.LoginUserDto](c)
+	if err != nil {
+		return err
 	}
 
 	token, err := app.appService.Login(body)
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusUnauthorized, err)
-		return
+		return fiber.NewError(fiber.StatusUnauthorized, err.Error())
 	}
 
-	utils.SuccessJSON(c, http.StatusCreated, token)
+	return utils.SuccessJSON(c, token)
 }
 
-func (app AppController) Me(c *gin.Context) {
-	user, _ := c.MustGet(constants.User).(*models.User)
-	utils.SuccessJSON(c, http.StatusOK, user)
+func (app AppController) Me(c *fiber.Ctx) error {
+	user, _ := utils.GetUser[models.User](c)
+	return utils.SuccessJSON(c, user)
 }
 
-func (app AppController) UpdateProfile(c *gin.Context) {
-	body := utils.BindBody[dto.UpdateProfileDto](c)
-	if body == nil {
-		return
+func (app AppController) UpdateProfile(c *fiber.Ctx) error {
+	body, err := utils.BindBody[dto.UpdateProfileDto](c)
+	if err != nil {
+		return err
 	}
 
-	user, _ := c.MustGet(constants.User).(*models.User)
+	user, _ := utils.GetUser[models.User](c)
 	if err := app.appService.UpdateProfile(user.ID, body); err != nil {
-		utils.ErrorJSON(c, http.StatusInternalServerError, err)
-		return
+		return err
 	}
 
-	utils.SuccessJSON(c, http.StatusOK, "success")
+	return utils.SuccessJSON(c, "success")
 }
 
-func (app AppController) TokenCheck(c *gin.Context) {
-	claims, _ := c.MustGet(constants.User).(*helpers.Claims)
-	utils.SuccessJSON(c, http.StatusOK, claims)
+func (app AppController) TokenCheck(c *fiber.Ctx) error {
+	claims, _ := utils.GetUser[helpers.Claims](c)
+	return utils.SuccessJSON(c, claims)
 }
 
-func (app AppController) TokenRefresh(c *gin.Context) {
-	user, _ := c.MustGet(constants.User).(*models.User)
+func (app AppController) TokenRefresh(c *fiber.Ctx) error {
+	user, _ := utils.GetUser[models.User](c)
 	tokens, err := app.appService.TokenRefresh(user)
 	if err != nil {
-		utils.ErrorJSON(c, http.StatusUnauthorized, err)
-		return
+		return fiber.NewError(fiber.StatusUnauthorized, err.Error())
 	}
-	utils.SuccessJSON(c, http.StatusOK, tokens)
+	return utils.SuccessJSON(c, tokens)
 }

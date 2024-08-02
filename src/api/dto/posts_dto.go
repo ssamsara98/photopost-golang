@@ -3,31 +3,31 @@ package dto
 import "mime/multipart"
 
 type GetPostByIDParams struct {
-	ID string `uri:"postId" binding:"required"`
+	PostID string `uri:"postId" json:"postId" validate:"required"`
 }
 
 type GetPostByUserIDParams struct {
-	ID string `uri:"userId" binding:"required"`
+	UserID string `uri:"userId" json:"userId" validate:"required"`
 }
 
 type CreatePostDto struct {
-	Caption  string   `form:"caption"`
-	PhotoIds []string `form:"photoIds"`
+	Caption  string   `json:"caption"`
+	PhotoIDs []string `json:"photoIds"`
 }
 
 type UploadPhotoDto struct {
-	Image multipart.FileHeader `form:"image" binding:"required"`
+	Image multipart.FileHeader `json:"image" validate:"required"`
 }
 
 type UpdatePostDto struct {
-	Title   *string `form:"title"`
-	Content *string `form:"content"`
+	Title   *string `json:"title"`
+	Content *string `json:"content"`
 }
 
 type PublishPostDto struct {
-	IsPublished *bool `form:"isPublished"`
+	IsPublished *bool `json:"isPublished"`
 }
 
 type AddPostCommentDto struct {
-	Content string `form:"content"`
+	Content string `json:"content"`
 }

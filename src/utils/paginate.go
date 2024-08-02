@@ -3,7 +3,7 @@ package utils
 import (
 	"math"
 
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 	"github.com/ssamsara98/photopost-golang/src/constants"
 	"gorm.io/gorm"
 )
@@ -27,14 +27,14 @@ type Pagination[M any, T any] struct {
 	Items *[]T `json:"items"`
 }
 
-func GetPaginationQuery(c *gin.Context) (*int64, *int64) {
-	limit, _ := c.MustGet(constants.Limit).(int64)
-	page, _ := c.MustGet(constants.Page).(int64)
+func GetPaginationQuery(c *fiber.Ctx) (*int64, *int64) {
+	limit, _ := c.Locals(constants.Limit).(int64)
+	page, _ := c.Locals(constants.Page).(int64)
 	return &limit, &page
 }
-func GetPaginationCursorQuery(c *gin.Context) (*int64, *int64) {
-	limit, _ := c.MustGet(constants.Limit).(int64)
-	cursor, _ := c.MustGet(constants.Cursor).(int64)
+func GetPaginationCursorQuery(c *fiber.Ctx) (*int64, *int64) {
+	limit, _ := c.Locals(constants.Limit).(int64)
+	cursor, _ := c.Locals(constants.Cursor).(int64)
 	return &limit, &cursor
 }
 
@@ -71,7 +71,6 @@ func CreatePagination[T any](items *[]T, count *int64, limit *int64, page *int64
 func CreatePaginationCursor[T any](items *[]T, limit *int64, cursor *int64) *Pagination[IPaginationCursorMeta, T] {
 	itemCount := int64(len(*items))
 	hasNext := itemCount >= *limit
-	// totalPages := int64(math.Ceil(float64(*count) / float64(*limit)))
 
 	meta := &IPaginationCursorMeta{
 		Cursor:    cursor,

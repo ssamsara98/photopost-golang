@@ -2,8 +2,6 @@ package commands
 
 import (
 	"context"
-	"net"
-	"net/http"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -59,44 +57,55 @@ func (s ServeCommand) Run() lib.CommandRunner {
 		// 	}
 		// }
 
-		logger.Info("Running server")
-		// --- using router.Run
-		// if env.ServerPort == "" {
-		// 	if err := router.Run(); err != nil {
-		// 		logger.Fatal(err)
-		// 		return
-		// 	}
-		// } else {
-		// 	if err := router.Run(":" + env.ServerPort); err != nil {
-		// 		logger.Fatal(err)
-		// 		return
-		// 	}
-		// }
-
-		// --- using lifecycle
-		var server *http.Server
+		port := ":3000"
 		if env.ServerPort != "" {
-			server = &http.Server{Addr: ":" + env.ServerPort, Handler: router}
-		} else {
-			server = &http.Server{Handler: router}
+			port = ":" + env.ServerPort
 		}
+		logger.Info("Running server")
+
+		// /* Using Graceful Shutdown */
+		// go func() {
+		// 	go func() {
+		// 		if err := router.Listen(port); err != nil {
+		// 			logger.Panic(err)
+		// 		}
+		// 	}()
+
+		// 	quit := make(chan os.Signal, 1)                                    // Create channel to signify a signal being sent
+		// 	signal.Notify(quit, os.Interrupt, syscall.SIGINT, syscall.SIGTERM) // When an interrupt or termination signal is sent, notify the channel
+		// 	<-quit                                                             // This blocks the main thread until an interrupt is received
+
+		// 	logger.Info("Gracefully shutting down...")
+		// 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		// 	defer cancel()
+		// 	if err := router.ShutdownWithContext(ctx); err != nil {
+		// 		logger.Panic(err)
+		// 	}
+		// 	select {
+		// 	case d := <-ctx.Done():
+		// 		logger.Infof("timeout of 5 seconds. %s", d)
+		// 	}
+		// 	logger.Info("Fiber was successful shutdown.")
+		// }()
+
+		/* Using Lifecycle */
 		lc.Append(fx.Hook{
 			OnStart: func(ctx context.Context) error {
-				ln, err := net.Listen("tcp", server.Addr)
-				if err != nil {
-					return err
-				}
-				logger.Info("Starting HTTP server at", server.Addr)
+				logger.Info("Starting HTTP server at", port)
 				go func() {
-					err := server.Serve(ln)
+					// err := server.Serve(ln)
+					err := router.Listen(port)
 					if err != nil {
-						logger.Error(err)
+						logger.Panic(err)
 					}
 				}()
 				return nil
 			},
 			OnStop: func(ctx context.Context) error {
-				return server.Shutdown(ctx)
+				logger.Info("Gracefully shutting down...")
+				err := router.ShutdownWithContext(ctx)
+				logger.Info("Fiber was successful shutdown.")
+				return err
 			},
 		})
 	}
