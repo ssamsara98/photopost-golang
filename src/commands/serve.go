@@ -57,7 +57,7 @@ func (s ServeCommand) Run() lib.CommandRunner {
 		// 	}
 		// }
 
-		port := ":3000"
+		port := ":8080"
 		if env.ServerPort != "" {
 			port = ":" + env.ServerPort
 		}
@@ -93,7 +93,6 @@ func (s ServeCommand) Run() lib.CommandRunner {
 			OnStart: func(ctx context.Context) error {
 				logger.Info("Starting HTTP server at", port)
 				go func() {
-					// err := server.Serve(ln)
 					err := router.Listen(port)
 					if err != nil {
 						logger.Panic(err)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/bytedance/sonic"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -35,6 +36,8 @@ func NewRouter(
 	app := fiber.New(fiber.Config{
 		IdleTimeout:  idleTimeout,
 		ErrorHandler: fiberErrorHandler,
+		JSONEncoder:  sonic.Marshal,
+		JSONDecoder:  sonic.Unmarshal,
 	})
 
 	/* MaxMultipartMemory */
