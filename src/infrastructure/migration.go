@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	migrate "github.com/rubenv/sql-migrate"
+	"github.com/ssamsara98/photopost-golang/src/constants"
 	"github.com/ssamsara98/photopost-golang/src/lib"
 )
 
@@ -27,7 +28,7 @@ type Migrations struct {
 
 // Migrate migrates all migrations that are defined
 func (m Migrations) Migrate() error {
-	if m.env.Environment == production {
+	if m.env.Environment == constants.Production {
 		m.logger.Info("no start-up migration on production.")
 		return nil
 	}
@@ -41,7 +42,7 @@ func (m Migrations) Migrate() error {
 	migrations := &migrate.FileMigrationSource{
 		Dir: "migration/",
 	}
-	_, err = migrate.Exec(sqlDB, m.env.DBType, migrations, migrate.Up)
+	_, err = migrate.Exec(sqlDB, m.env.DatabaseType, migrations, migrate.Up)
 	if err != nil {
 		return err
 	}

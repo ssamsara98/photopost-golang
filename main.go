@@ -1,9 +1,8 @@
 package main
 
 import (
-	"github.com/ssamsara98/photopost-golang/src/bootstrap"
-
 	"github.com/joho/godotenv"
+	"github.com/ssamsara98/photopost-golang/src/bootstrap"
 )
 
 func main() {

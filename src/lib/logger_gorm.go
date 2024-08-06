@@ -24,9 +24,29 @@ func (l *GormLogger) setup() {
 	)
 
 	if l.Config.Colorful {
-		traceStr = "\n```sql " + gormlogger.Yellow + "[%.6f ms] " + gormlogger.Blue + "[rows:%v]\n" + gormlogger.Reset + gormlogger.Green + "%s\n" + gormlogger.Reset + "```"
-		traceWarnStr = gormlogger.Yellow + "%s\n" + gormlogger.Reset + "```sql " + gormlogger.Red + "[%.6f ms] " + gormlogger.Yellow + "[rows:%v]\n" + gormlogger.Reset + gormlogger.Blue + "%s\n" + gormlogger.Reset + "```"
-		traceErrStr = gormlogger.Red + "%s\n" + gormlogger.Reset + "```sql " + gormlogger.Yellow + "[%.6f ms] " + gormlogger.Green + "[rows:%v]\n" + gormlogger.Reset + gormlogger.Magenta + "%s\n" + gormlogger.Reset + "```"
+		traceStr = fmt.Sprintf(
+			"\n```sql %s %s\n%s\n%s```",
+			gormlogger.Yellow+"[%.6f ms]", // latency
+			gormlogger.Blue+"[rows:%v]",   // rows
+			gormlogger.Green+"%s",         // query
+			gormlogger.Reset,
+		)
+		traceWarnStr = fmt.Sprintf(
+			"%s\n```sql %s %s\n%s\n%s```",
+			gormlogger.Yellow+"%s"+gormlogger.Reset,
+			gormlogger.Red+"[%.6f ms]",     // latency
+			gormlogger.Magenta+"[rows:%v]", // rows
+			gormlogger.Blue+"%s",           // query
+			gormlogger.Reset,
+		)
+		traceErrStr = fmt.Sprintf(
+			"%s\n```sql %s %s\n%s\n%s```",
+			gormlogger.Red+"%s"+gormlogger.Reset,
+			gormlogger.Yellow+"[%.6f ms]", // latency
+			gormlogger.Green+"[rows:%v]",  // rows
+			gormlogger.Magenta+"%s",       // query
+			gormlogger.Reset,
+		)
 	}
 
 	l.traceStr = traceStr

@@ -1,21 +1,9 @@
-FROM golang:1.21-alpine
+ARG IMAGE=golang:1.21-alpine
 
-# Required because go requires gcc to build
-RUN apk update && apk upgrade && apk add --no-cache build-base bash git inotify-tools make
-RUN go install github.com/rubenv/sql-migrate/...@latest
-
-WORKDIR /app
-COPY ["../go.mod", "../go.sum", "./"]
-RUN go mod tidy
-COPY . .
-
-RUN cp template.production.env .env
-RUN go build -buildvcs=false -o photopost
+FROM ${IMAGE} as base
 
 ENV PORT=8080
-ENV SERVER_PORT=8080
 ENV ENVIRONMENT=production
-ENV ENV=production
 ENV LOG_LEVEL=info
 ENV LOG_OUTPUT=server.log
 ENV DB_TYPE=postgres
@@ -25,4 +13,29 @@ ENV JWT_REFRESH_SECRET=9bc0195061abea1f9461ba84412c9d8819594a1b166b0e1996ca09741
 ENV ACCESS_TOKEN_DURATION=24h
 ENV REFRESH_TOKEN_DURATION=720h
 
+EXPOSE 8080
+EXPOSE 4000
+
+# Required because go requires gcc to build
+RUN apk update && apk upgrade && apk add --no-cache build-base bash git inotify-tools make
+RUN go install github.com/rubenv/sql-migrate/...@latest
+RUN export PATH="$PATH:/go/bin"
+
+WORKDIR /app
+COPY --link go.mod go.sum ./
+RUN go mod download
+
+FROM base as build
+RUN mkdir -p /tmp/build
+COPY --from=base --link /app/go.mod /app/go.sum /tmp/build/
+RUN cd /tmp/build && go mod tidy
+COPY --link . .
+RUN go build -buildvcs=false -o photopost
+
+FROM base AS release
+COPY --from=build /app/migration migration
+COPY --from=build /app/seeders seeders
+COPY --from=build /app/go.mod /app/go.sum /app/make /app/Makefile /app/dbconfig.yml /app/template.production.env /app/photopost ./
+
+RUN mv template.production.env .env
 CMD ["./photopost", "app:serve"]

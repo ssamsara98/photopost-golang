@@ -1,8 +1,7 @@
 package infrastructure
 
 import (
-	"fmt"
-
+	"github.com/ssamsara98/photopost-golang/src/constants"
 	"github.com/ssamsara98/photopost-golang/src/lib"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -20,29 +19,20 @@ func NewDatabase(
 	env *lib.Env,
 	logger *lib.Logger,
 ) *Database {
-	url := fmt.Sprintf(
-		"user=%s password=%s host=%s port=%s dbname=%s",
-		env.DBUsername,
-		env.DBPassword,
-		env.DBHost,
-		env.DBPort,
-		env.DBName,
-	)
-
 	logger.Info("opening db connection")
 	var db *gorm.DB
 	var err error
-	if env.Environment == production {
-		db, err = gorm.Open(postgres.Open(url), &gorm.Config{
+	if env.Environment == constants.Production {
+		db, err = gorm.Open(postgres.Open(env.DatabaseUrl), &gorm.Config{
 			Logger: logger.GetGormLogger(),
 		})
 	} else {
-		db, err = gorm.Open(postgres.Open(url), &gorm.Config{
+		db, err = gorm.Open(postgres.Open(env.DatabaseUrl), &gorm.Config{
 			Logger: logger.GetGormLogger().LogMode(gormlogger.Info),
 		})
 	}
 	if err != nil {
-		logger.Info("Url: ", url)
+		logger.Info("Url: ", env.DatabaseUrl)
 		logger.Panic(err)
 	}
 

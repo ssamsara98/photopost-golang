@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/ssamsara98/photopost-golang/src/api/middlewares"
 	"github.com/ssamsara98/photopost-golang/src/api/routes"
+	"github.com/ssamsara98/photopost-golang/src/constants"
 	"github.com/ssamsara98/photopost-golang/src/infrastructure"
 	"github.com/ssamsara98/photopost-golang/src/lib"
 	"go.uber.org/fx"
@@ -32,7 +33,7 @@ func (s ServeCommand) Run() lib.CommandRunner {
 		routes *routes.Routes,
 		lc fx.Lifecycle,
 	) {
-		if env.Environment == "production" {
+		if env.Environment == constants.Production {
 			logger.Info(`+-------PRODUCTION-------+`)
 		}
 		logger.Info(`+------------------------+`)
@@ -46,7 +47,7 @@ func (s ServeCommand) Run() lib.CommandRunner {
 		middleware.Setup()
 		routes.Setup()
 
-		// if (env.Environment != "local" && env.Environment != "development") && env.SentryDSN != "" {
+		// if (env.Environment != constants.Local && env.Environment != constants.Development) && env.SentryDSN != "" {
 		// 	err := sentry.Init(sentry.ClientOptions{
 		// 		Dsn:              env.SentryDSN,
 		// 		AttachStacktrace: true,
@@ -58,8 +59,8 @@ func (s ServeCommand) Run() lib.CommandRunner {
 		// }
 
 		port := ":8080"
-		if env.ServerPort != "" {
-			port = ":" + env.ServerPort
+		if env.Port != "" {
+			port = ":" + env.Port
 		}
 		logger.Info("Running server")
 
@@ -90,20 +91,20 @@ func (s ServeCommand) Run() lib.CommandRunner {
 
 		/* Using Lifecycle */
 		lc.Append(fx.Hook{
-			OnStart: func(ctx context.Context) error {
+			OnStart: func(ctx context.Context) (err error) {
 				logger.Info("Starting HTTP server at", port)
 				go func() {
-					err := router.Listen(port)
+					err = router.Listen(port)
 					if err != nil {
 						logger.Panic(err)
 					}
 				}()
-				return nil
+				return err
 			},
-			OnStop: func(ctx context.Context) error {
+			OnStop: func(ctx context.Context) (err error) {
 				logger.Info("Gracefully shutting down...")
-				err := router.ShutdownWithContext(ctx)
-				logger.Info("Fiber was successful shutdown.")
+				err = router.ShutdownWithContext(ctx)
+				logger.Info("Server was successful shutdown.")
 				return err
 			},
 		})

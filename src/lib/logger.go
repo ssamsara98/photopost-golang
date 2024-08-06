@@ -4,6 +4,7 @@ import (
 	"io"
 	"time"
 
+	"github.com/ssamsara98/photopost-golang/src/constants"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -32,9 +33,9 @@ func newLogger(env *Env) Logger {
 	config := zap.NewDevelopmentConfig()
 	logOutput := env.LogOutput
 
-	if (env.Environment == "local") || (env.Environment == "development") {
+	if (env.Environment == constants.Local) || (env.Environment == constants.Development) {
 		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	} else if env.Environment == "production" && logOutput != "" {
+	} else if env.Environment == constants.Production && logOutput != "" {
 		config.OutputPaths = []string{logOutput}
 	}
 
@@ -82,7 +83,7 @@ func (l Logger) GetGormLogger() gormlogger.Interface {
 	ignoreRecordNotFoundError := false
 	colorful := true
 	if globalEnv != nil {
-		if globalEnv.Environment == "production" {
+		if globalEnv.Environment == constants.Production {
 			ignoreRecordNotFoundError = true
 			colorful = false
 		}
@@ -110,7 +111,7 @@ func (l Logger) GetFxLogger() fxevent.Logger {
 	return result
 }
 
-// GetFiberLogger gets logger for gin framework debugging
+// GetFiberLogger gets logger for fiber framework debugging
 func (l Logger) GetFiberLogger() io.Writer {
 	logger := zapLogger.WithOptions(
 		zap.WithCaller(false),
