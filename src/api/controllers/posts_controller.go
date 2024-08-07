@@ -30,12 +30,18 @@ func NewPostsController(
 }
 
 func (p PostsController) UploadPhoto(c *fiber.Ctx) error {
-	body, err := utils.BindBody[dto.UploadPhotoDto](c)
+	// body, err := utils.BindBody[dto.UploadPhotoDto](c)
+	// if err != nil {
+	// 	return err
+	// }
+
+	image, err := c.FormFile("image")
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	s3, err := p.s3Service.UploadPhoto(&body.Image)
+	// s3, err := p.s3Service.UploadPhoto(&body.Image)
+	s3, err := p.s3Service.UploadPhoto(image)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}

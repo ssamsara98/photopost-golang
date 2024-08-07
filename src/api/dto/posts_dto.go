@@ -16,7 +16,7 @@ type CreatePostDto struct {
 }
 
 type UploadPhotoDto struct {
-	Image multipart.FileHeader `json:"image" validate:"required"`
+	Image *multipart.FileHeader `json:"image" form:"image" validate:"required"`
 }
 
 type UpdatePostDto struct {
