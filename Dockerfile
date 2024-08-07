@@ -2,7 +2,7 @@ ARG IMAGE=golang:1.21-alpine
 
 FROM ${IMAGE} as base
 
-ENV PATH="$PATH:$GOPATH/bin"
+ENV PATH=$PATH:/go/bin
 
 ENV PORT=8080
 ENV ENVIRONMENT=production
@@ -39,4 +39,5 @@ COPY --from=build /app/seeders seeders
 COPY --from=build /app/go.mod /app/go.sum /app/make /app/Makefile /app/dbconfig.yml /app/template.production.env /app/main ./
 
 RUN mv template.production.env .env
+RUN export PATH="/go/bin:$PATH"
 CMD ["./main", "app:serve"]
