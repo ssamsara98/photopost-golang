@@ -57,6 +57,7 @@ func NewRouter(
 		ErrorHandler: fiberErrorHandler,
 		JSONEncoder:  sonic.Marshal,
 		JSONDecoder:  sonic.Unmarshal,
+		BodyLimit:    5 * 1024 * 1024, // 5 MB
 	})
 
 	/* MaxMultipartMemory */

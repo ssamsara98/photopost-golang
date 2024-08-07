@@ -1,6 +1,8 @@
 package dto
 
-import "mime/multipart"
+import (
+	"mime/multipart"
+)
 
 type GetPostByIDParams struct {
 	PostID string `uri:"postId" json:"postId" validate:"required"`
